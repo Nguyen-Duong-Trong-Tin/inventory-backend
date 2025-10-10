@@ -1,6 +1,6 @@
 import { Model, RootFilterQuery } from 'mongoose';
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
 import { BaseCrudService } from 'src/cores/base-crud.core';
@@ -44,7 +44,7 @@ export class SuppliersService extends BaseCrudService<Supplier> {
       update: { name, email, phone, address },
     });
     if (!newSupplier) {
-      throw new Error('Supplier id not found');
+      throw new NotFoundException('Supplier id not found');
     }
 
     return newSupplier;
@@ -55,8 +55,9 @@ export class SuppliersService extends BaseCrudService<Supplier> {
     const deletedSupplier = await this.findOneAndDelete({
       filter: { _id: id } as RootFilterQuery<Supplier>,
     });
+
     if (!deletedSupplier) {
-      throw new Error('Supplier id not found');
+      throw new NotFoundException('Supplier id not found');
     }
 
     return deletedSupplier;
@@ -91,8 +92,6 @@ export class SuppliersService extends BaseCrudService<Supplier> {
       sort = sortHelper(sortBy as string, sortOrder as string);
     }
 
-    console.log(sort);
-
     const pagination = paginationHelper(page, limit);
 
     const [suppliers, total] = await Promise.all([
@@ -122,7 +121,7 @@ export class SuppliersService extends BaseCrudService<Supplier> {
     });
 
     if (!supplierExists) {
-      throw new Error('Supplier id not found');
+      throw new NotFoundException('Supplier id not found');
     }
 
     return supplierExists;
