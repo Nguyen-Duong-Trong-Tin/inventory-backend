@@ -1,21 +1,26 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { BaseCrudService } from 'src/cores/base-crud.core';
-import { ProductType } from './schema/product-type.schema';
+import { ProductTypes } from './schema/product-type.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { CreateProductTypeBodyDto } from './dto/create-product-type.dto';
-import { UpdateProductTypeBodyDto } from './dto/update-product-type.dto';
+import { Model, RootFilterQuery } from 'mongoose';
+import { CreateProductTypesBodyDto } from './dto/create-product-type.dto';
+import { UpdateProductTypesBodyDto } from './dto/update-product-type.dto';
+import { FindProDuctTypesQueryDto } from './dto/find-product-types.dto';
+import sortHelper from 'src/helpers/sort.helper';
+import paginationHelper from 'src/helpers/pagination.helper';
 
 @Injectable()
-export class ProductTypesService extends BaseCrudService<ProductType> {
+export class ProductTypesService extends 
+BaseCrudService<ProductTypes> {
   constructor(
-    @InjectModel(ProductType.name) private productTypeModel: Model<ProductType>,
+    @InjectModel(ProductTypes.name) 
+    private ProductTypesModel: Model<ProductTypes>,
   ) {
-    super(productTypeModel);
+    super(ProductTypesModel);
   }
 
   // POST /product-types
-  async createProductType({ body }: { body: CreateProductTypeBodyDto }) {
+  async createProductTypes({ body }: { body: CreateProductTypesBodyDto }) {
     const { name, description } = body;
 
     return await this.create({
@@ -24,23 +29,94 @@ export class ProductTypesService extends BaseCrudService<ProductType> {
   }
 
   // PATCH /product-types/:id
-  async updateProductType({
+  async updateProductTypes({
     id,
     body,
   }: {
     id: string;
-    body: UpdateProductTypeBodyDto;
+    body: UpdateProductTypesBodyDto;
   }) {
     const { name, description } = body;
 
-    const newProductType = await this.findOneAndUpdate({
+    const newProductTypes = await this.findOneAndUpdate({
       filter: { _id: id },
-      update: { name, description },
+      update: { name,description },
     });
-    if (!newProductType) {
-      throw new NotFoundException('Product type id not found');
+    if (!newProductTypes) {
+      throw new NotFoundException('Product Types id not found');
     }
 
-    return newProductType;
+    return newProductTypes;
   }
+
+  // DELETE /product-types/:id
+  async deleteProductTypes({ id }: { id: string }) {
+    const deleteProductTypes = await this.findOneAndDelete({
+      filter: { _id: id } as RootFilterQuery<ProductTypes>,
+    });
+
+    if (!deleteProductTypes) {
+      throw new NotFoundException('Supplier id not found');
+    }
+
+    return deleteProductTypes;
+  }
+
+// GET /product-types
+  async findProductTypes({ query }: { query: FindProDuctTypesQueryDto }) {
+    const { filter, page, limit } = query;
+
+    const filterOptions: RootFilterQuery<ProductTypes> = {};
+    let sort = {};
+
+    if (filter) {
+      const { name, description, sortBy, sortOrder } = filter;
+
+      if (name) {
+        filterOptions.name = { $regex: name as string, $options: 'i' };
+      }
+
+      if (description) {
+        filterOptions.email = { $regex: description as string, $options: 'i' };
+      }
+
+      sort = sortHelper(sortBy as string, sortOrder as string);
+    }
+
+    const pagination = paginationHelper(page, limit);
+
+    const [ProductTypes, total] = await Promise.all([
+      this.find({
+        filter: filterOptions,
+        skip: pagination.skip,
+        limit: pagination.limit,
+        sort,
+      }),
+      this.countDocuments({ filter: filterOptions }),
+    ]);
+
+    return {
+      ProductTypes: {
+        total,
+        page: pagination.page,
+        limit: pagination.limit,
+        ProductTypes,
+      },
+    };
+  }
+  
+  
+    // GET /product-types/:id
+    async findProductTypesById({ id }: { id: string }) {
+      const ProductTypesExists = await this.findOne({
+        filter: { _id: id } as RootFilterQuery<ProductTypes>,
+      });
+  
+      if (!ProductTypesExists) {
+        throw new NotFoundException('Product Types id not found');
+      }
+  
+      return ProductTypesExists;
+    }
+
 }

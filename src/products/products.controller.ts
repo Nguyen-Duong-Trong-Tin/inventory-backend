@@ -11,6 +11,6 @@ export class ProductsController {
 
   @Post('/')
   async createProduct(@Body() body: CreateProductBodyDto) {
-    return this.productsService.createSupplier({ body });
+    return this.productsService.createProduct({ body });
   }
 }
