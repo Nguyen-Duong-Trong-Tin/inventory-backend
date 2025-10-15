@@ -3,9 +3,9 @@ import { BaseCrudService } from 'src/cores/base-crud.core';
 import { ProductTypes } from './schema/product-type.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, RootFilterQuery } from 'mongoose';
-import { CreateProductTypesBodyDto } from './dto/create-product-type.dto';
+import { CreateProductTypeBodyDto } from './dto/create-product-type.dto';
 import { UpdateProductTypesBodyDto } from './dto/update-product-type.dto';
-import { FindProDuctTypesQueryDto } from './dto/find-product-types.dto';
+import { FindProDuctTypeQueryDto } from './dto/find-product-type.dto';
 import sortHelper from 'src/helpers/sort.helper';
 import paginationHelper from 'src/helpers/pagination.helper';
 
@@ -20,7 +20,7 @@ BaseCrudService<ProductTypes> {
   }
 
   // POST /product-types
-  async createProductTypes({ body }: { body: CreateProductTypesBodyDto }) {
+  async createProductType({ body }: { body: CreateProductTypeBodyDto }) {
     const { name, description } = body;
 
     return await this.create({
@@ -50,20 +50,20 @@ BaseCrudService<ProductTypes> {
   }
 
   // DELETE /product-types/:id
-  async deleteProductTypes({ id }: { id: string }) {
-    const deleteProductTypes = await this.findOneAndDelete({
+  async deleteProductType({ id }: { id: string }) {
+    const deleteProductType = await this.findOneAndDelete({
       filter: { _id: id } as RootFilterQuery<ProductTypes>,
     });
 
-    if (!deleteProductTypes) {
-      throw new NotFoundException('Supplier id not found');
+    if (!deleteProductType) {
+      throw new NotFoundException('Product Type id not found');
     }
 
-    return deleteProductTypes;
+    return deleteProductType;
   }
 
 // GET /product-types
-  async findProductTypes({ query }: { query: FindProDuctTypesQueryDto }) {
+  async findProductType({ query }: { query: FindProDuctTypeQueryDto }) {
     const { filter, page, limit } = query;
 
     const filterOptions: RootFilterQuery<ProductTypes> = {};
@@ -107,13 +107,13 @@ BaseCrudService<ProductTypes> {
   
   
     // GET /product-types/:id
-    async findProductTypesById({ id }: { id: string }) {
+    async findProductTypeById({ id }: { id: string }) {
       const ProductTypesExists = await this.findOne({
         filter: { _id: id } as RootFilterQuery<ProductTypes>,
       });
   
       if (!ProductTypesExists) {
-        throw new NotFoundException('Product Types id not found');
+        throw new NotFoundException('Product Type id not found');
       }
   
       return ProductTypesExists;
