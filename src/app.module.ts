@@ -7,6 +7,7 @@ import { SuppliersModule } from './suppliers/suppliers.module';
 import { ProductTypesModule } from './product-types/product-types.module';
 import { ProductsModule } from './products/products.module';
 import { CustomersModule } from './customers/customers.module';
+import { RolesModule } from './roles/roles.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { CustomersModule } from './customers/customers.module';
     ProductTypesModule,
     ProductsModule,
     CustomersModule,
+    RolesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
