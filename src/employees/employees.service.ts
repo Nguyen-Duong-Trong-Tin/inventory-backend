@@ -41,23 +41,31 @@ export class EmployeesService extends BaseCrudService<Employee> {
 
     // PATCH /employees/:id
     async updateEmployee({
-        id,
-        body,
-      }: {
-        id: string;
-        body: UpdateEmployeeBodyDto;
-      }) {
-        const { name, phone, email, address, password, roleId  } = body;
-    
-        const newEmployee = await this.findOneAndUpdate({
-          filter: { _id: id },
-          update: { name, phone, email, address, password, roleId  },
-        });
-        if (!newEmployee) {
-          throw new NotFoundException('Employee id not found');
-        }
-    
-        return newEmployee;
+      id,
+      body,
+    }: {
+      id: string;
+      body: UpdateEmployeeBodyDto;
+    }) {
+      const { name, phone, email, address, password, roleId } = body;
+
+      let updateData: any = { name, phone, email, address, roleId };
+
+      // md5
+      if (password) {
+        updateData.password = crypto.createHash('md5').update(password).digest('hex');
+      }
+
+      const newEmployee = await this.findOneAndUpdate({
+        filter: { _id: id },
+        update: updateData,
+      });
+
+      if (!newEmployee) {
+        throw new NotFoundException('Employee id not found');
+      }
+
+      return newEmployee;
     }
 
     // DELETE /employee/:id
