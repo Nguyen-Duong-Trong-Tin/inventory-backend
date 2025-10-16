@@ -12,6 +12,7 @@ import {
 import { CustomersService } from './customers.service';
 import { CreateCustomerBodyDto } from './dto/create-customer.dto';
 import { UpdateCustomerBodyDto } from './dto/update-customer.dto';
+import { FindCustomersQueryDto } from './dto/find-customers.dto';
 
 @Controller({
   path: 'customers',

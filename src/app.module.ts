@@ -7,6 +7,7 @@ import { SuppliersModule } from './suppliers/suppliers.module';
 import { ProductTypesModule } from './product-types/product-types.module';
 import { ProductsModule } from './products/products.module';
 import { CustomersModule } from './customers/customers.module';
+import { RolesModule } from './roles/roles.module';
 import { WarehousesModule } from './warehouses/warehouses.module';
 
 @Module({
@@ -18,6 +19,7 @@ import { WarehousesModule } from './warehouses/warehouses.module';
     ProductTypesModule,
     ProductsModule,
     CustomersModule,
+    RolesModule,
     WarehousesModule,
   ],
   controllers: [AppController],
