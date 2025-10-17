@@ -84,15 +84,15 @@ export class ProductsService extends BaseCrudService<Product> {
       }
 
       if (status) {
-        filterOptions.email = { $regex: status as string, $options: 'i' };
+        filterOptions.status = { $regex: status as string, $options: 'i' };
       }
 
       if (unit) {
-        filterOptions.phone = { $regex: unit as number, $options: 'i' };
+        filterOptions.unit = { $regex: unit as number, $options: 'i' };
       }
 
       if (productTypeId) {
-        filterOptions.address = { $regex: productTypeId as string, $options: 'i' };
+        filterOptions.productTypeId = { $regex: productTypeId as string, $options: 'i' };
       }
 
       sort = sortHelper(sortBy as string, sortOrder as string);
