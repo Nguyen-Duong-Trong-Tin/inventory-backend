@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class CreateProductTypesBodyDto {
+export class CreateProductTypeBodyDto {
   @IsString()
   @IsNotEmpty()
   name: string;

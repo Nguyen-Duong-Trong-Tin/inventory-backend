@@ -1,7 +1,7 @@
 import { Transform, Type } from 'class-transformer';
 import { IsNumber, IsObject, IsOptional, Max, Min } from 'class-validator';
 
-export class FindProDuctTypesQueryDto {
+export class FindProDuctTypeQueryDto {
   @IsObject()
   @Transform(({ value }) => {
     if (!value) return {};

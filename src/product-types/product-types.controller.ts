@@ -10,9 +10,9 @@ import {
 } from '@nestjs/common';
 
 import { ProductTypesService } from './product-types.service';
-import { CreateProductTypesBodyDto } from './dto/create-product-type.dto';
+import { CreateProductTypeBodyDto } from './dto/create-product-type.dto';
 import { UpdateProductTypesBodyDto } from './dto/update-product-type.dto';
-import { FindProDuctTypesQueryDto } from './dto/find-product-types.dto';
+import { FindProDuctTypeQueryDto } from './dto/find-product-type.dto';
 
 @Controller({
   path: 'product-types',
@@ -22,8 +22,8 @@ export class ProductTypesController {
   constructor(private readonly productTypesService: ProductTypesService) {}
 
   @Post('/')
-  async createProductType(@Body() body: CreateProductTypesBodyDto) {
-    return await this.productTypesService.createProductTypes({ body });
+  async createProductType(@Body() body: CreateProductTypeBodyDto) {
+    return await this.productTypesService.createProductType({ body });
   }
 
     @Patch('/:id')
@@ -36,12 +36,12 @@ export class ProductTypesController {
 
     @Delete('/:id')
     async deleteProductTypes(@Param('id') id: string) {
-      return this.productTypesService.deleteProductTypes({ id });
+      return this.productTypesService.deleteProductType({ id });
     }
 
     @Get('/')
-    async findProductTypes(@Query() query: FindProDuctTypesQueryDto) {
-      return this.productTypesService.findProductTypes({ query });
+    async findProductType(@Query() query: FindProDuctTypeQueryDto) {
+      return this.productTypesService.findProductType({ query });
     }
 
     @Get('/:id')
