@@ -23,5 +23,5 @@ export class UpdateEmployeeBodyDto {
 
   @IsString()
   @IsOptional()
-  roleId: string;
+  roleId?: string;
 }
