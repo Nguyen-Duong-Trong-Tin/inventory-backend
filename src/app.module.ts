@@ -10,6 +10,7 @@ import { CustomersModule } from './customers/customers.module';
 import { RolesModule } from './roles/roles.module';
 import { WarehousesModule } from './warehouses/warehouses.module';
 import { EmployeesModule } from './employees/employees.module';
+import { WarehouseReceiptsModule } from './warehouse-receipts/warehouse-receipts.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { EmployeesModule } from './employees/employees.module';
     RolesModule,
     WarehousesModule,
     EmployeesModule,
+    WarehouseReceiptsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
