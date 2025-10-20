@@ -8,7 +8,7 @@ export type DeliverynoteDocument = HydratedDocument<Deliverynote>;
   collection: 'deliverynotes',
   timestamps: true,
 })
-export class Deliverynote {
+export class DeliveryNote {
   @Prop({ type: String, required: true })
   deliveryNo: string;
 
@@ -25,4 +25,4 @@ export class Deliverynote {
   customerId: string;
 }
 
-export const DeliverynoteSchema = SchemaFactory.createForClass(Deliverynote);
+export const DeliveryNoteSchema = SchemaFactory.createForClass(DeliveryNote);
