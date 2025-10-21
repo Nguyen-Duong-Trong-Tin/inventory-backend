@@ -14,7 +14,8 @@ import { FindProductsQueryDto } from './dto/find-products.dto';
 export class ProductsService extends BaseCrudService<Product> {
   constructor(
     private readonly productTypesService: ProductTypesService,
-    @InjectModel(Product.name) private productModel: Model<Product>,
+    @InjectModel(Product.name) 
+    private productModel: Model<Product>,
   ) {
     super(productModel);
   }
@@ -23,6 +24,7 @@ export class ProductsService extends BaseCrudService<Product> {
   async createProduct({ body }: { body: CreateProductBodyDto }) {
     const { name, status, unit, productTypeId } = body;
 
+    //Kiểm tra loại sản phẩm
     const productTypeExists = await this.productTypesService.findOne({
       filter: { _id: productTypeId },
     });
@@ -31,7 +33,7 @@ export class ProductsService extends BaseCrudService<Product> {
     }
 
     return await this.create({
-      doc: { name, status, unit },
+      doc: { name, status, unit, productTypeId },
     });
   }
 

@@ -10,7 +10,11 @@ import { CustomersModule } from './customers/customers.module';
 import { RolesModule } from './roles/roles.module';
 import { WarehousesModule } from './warehouses/warehouses.module';
 import { EmployeesModule } from './employees/employees.module';
+<<<<<<< HEAD
+import { DeliveryNotesModule } from './delivery-notes/delivery-notes.module';
+=======
 import { WarehouseReceiptsModule } from './warehouse-receipts/warehouse-receipts.module';
+>>>>>>> f07e6afb172cf202fe00eec1eb61b0cf5019edda
 
 @Module({
   imports: [
@@ -24,7 +28,11 @@ import { WarehouseReceiptsModule } from './warehouse-receipts/warehouse-receipts
     RolesModule,
     WarehousesModule,
     EmployeesModule,
+<<<<<<< HEAD
+    DeliveryNotesModule,
+=======
     WarehouseReceiptsModule,
+>>>>>>> f07e6afb172cf202fe00eec1eb61b0cf5019edda
   ],
   controllers: [AppController],
   providers: [AppService],
