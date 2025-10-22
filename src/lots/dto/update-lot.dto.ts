@@ -1,6 +1,6 @@
 import { IsDate, IsDateString, IsNumber, IsOptional, IsString } from 'class-validator';
 
-export class UpdateLotsBodyDto {
+export class UpdateLotBodyDto {
   @IsNumber()
   @IsOptional()
   lotNumber?: number;
