@@ -7,12 +7,16 @@ import {
   Patch,
   Post,
   Query,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
 
 import { EmployeesService } from './employees.service';
 import { CreateEmployeeBodyDto } from './dto/create-employee.dto';
 import { UpdateEmployeeBodyDto } from './dto/update-employee.dto';
 import { FindEmployeesQueryDto } from './dto/find-employees.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import IEmployee from './interfaces/employee.interface';
 
 @Controller({
   path: 'employees',
@@ -47,5 +51,12 @@ export class EmployeesController {
   @Get('/:id')
   async findEmployeeById(@Param('id') id: string) {
     return this.employeesService.findOne({ filter: { _id: id } });
+  }
+
+  @Get('/get/profile')
+  @UseGuards(JwtAuthGuard)
+  getProfile(@Request() req) {
+    console.log(req.user);
+    return req.user as IEmployee;
   }
 }

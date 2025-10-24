@@ -12,6 +12,7 @@ import { WarehousesModule } from './warehouses/warehouses.module';
 import { EmployeesModule } from './employees/employees.module';
 import { DeliveryNotesModule } from './delivery-notes/delivery-notes.module';
 import { WarehouseReceiptsModule } from './warehouse-receipts/warehouse-receipts.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { WarehouseReceiptsModule } from './warehouse-receipts/warehouse-receipts
     EmployeesModule,
     DeliveryNotesModule,
     WarehouseReceiptsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

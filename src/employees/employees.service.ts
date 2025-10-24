@@ -20,6 +20,16 @@ export class EmployeesService extends BaseCrudService<Employee> {
     super(employeeModel);
   }
 
+  async login({ email, password }: { email: string; password: string }) {
+    // md5
+    const hashedPassword = crypto
+      .createHash('md5')
+      .update(password)
+      .digest('hex');
+
+    return await this.findOne({ filter: { email, password: hashedPassword } });
+  }
+
   // POST /employees
   async createEmployee({ body }: { body: CreateEmployeeBodyDto }) {
     const { name, phone, email, address, password, roleId } = body;
