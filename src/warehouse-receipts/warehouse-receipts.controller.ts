@@ -1,12 +1,12 @@
-import { 
-  Body, 
-  Controller, 
-  Delete, 
-  Get, 
-  Param, 
-  Patch, 
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
   Post,
-  Query
+  Query,
 } from '@nestjs/common';
 
 import { WarehouseReceiptsService } from './warehouse-receipts.service';
@@ -19,11 +19,13 @@ import { FindWarehousesReceiptsQueryDto } from './dto/find-warehousereceipts.dto
   version: '1',
 })
 export class WarehouseReceiptsController {
-  constructor(private readonly warehouseReceiptsService: WarehouseReceiptsService) {}
+  constructor(
+    private readonly warehouseReceiptsService: WarehouseReceiptsService,
+  ) {}
 
   @Post('/')
-  async createWarehouseReceipt(@Body() body: CreateWarehouseReceiptBodyDto){
-    return this.warehouseReceiptsService.createWarehouseReceipt({body});
+  async createWarehouseReceipt(@Body() body: CreateWarehouseReceiptBodyDto) {
+    return this.warehouseReceiptsService.createWarehouseReceipt({ body });
   }
 
   @Patch('/:id')
@@ -43,7 +45,7 @@ export class WarehouseReceiptsController {
   async findWarehouseReceipts(@Query() query: FindWarehousesReceiptsQueryDto) {
     return this.warehouseReceiptsService.findWarehouseReceipts({ query });
   }
-  
+
   @Get('/:id')
   async findWarehouseReceiptById(@Param('id') id: string) {
     return this.warehouseReceiptsService.findOne({ filter: { _id: id } });

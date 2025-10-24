@@ -1,10 +1,10 @@
-import { 
-  Body, 
-  Controller, 
-  Delete, 
-  Get, 
-  Param, 
-  Patch, 
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
@@ -26,27 +26,26 @@ export class ProductTypesController {
     return await this.productTypesService.createProductType({ body });
   }
 
-    @Patch('/:id')
-    async updateProductTypes(
-      @Param('id') id: string,
-      @Body() body: UpdateProductTypesBodyDto,
-    ) {
-      return this.productTypesService.updateProductTypes({ id, body });
-    }
-
-    @Delete('/:id')
-    async deleteProductTypes(@Param('id') id: string) {
-      return this.productTypesService.deleteProductType({ id });
-    }
-
-    @Get('/')
-    async findProductType(@Query() query: FindProDuctTypeQueryDto) {
-      return this.productTypesService.findProductType({ query });
-    }
-
-    @Get('/:id')
-    async findProductTypesById(@Param('id') id: string) {
-      return this.productTypesService.findOne({ filter: { _id: id } });
+  @Patch('/:id')
+  async updateProductTypes(
+    @Param('id') id: string,
+    @Body() body: UpdateProductTypesBodyDto,
+  ) {
+    return this.productTypesService.updateProductTypes({ id, body });
   }
 
+  @Delete('/:id')
+  async deleteProductTypes(@Param('id') id: string) {
+    return this.productTypesService.deleteProductType({ id });
+  }
+
+  @Get('/')
+  async findProductType(@Query() query: FindProDuctTypeQueryDto) {
+    return this.productTypesService.findProductType({ query });
+  }
+
+  @Get('/:id')
+  async findProductTypesById(@Param('id') id: string) {
+    return this.productTypesService.findOne({ filter: { _id: id } });
+  }
 }

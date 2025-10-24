@@ -14,7 +14,7 @@ import { FindProductsQueryDto } from './dto/find-products.dto';
 export class ProductsService extends BaseCrudService<Product> {
   constructor(
     private readonly productTypesService: ProductTypesService,
-    @InjectModel(Product.name) 
+    @InjectModel(Product.name)
     private productModel: Model<Product>,
   ) {
     super(productModel);
@@ -94,7 +94,10 @@ export class ProductsService extends BaseCrudService<Product> {
       }
 
       if (productTypeId) {
-        filterOptions.productTypeId = { $regex: productTypeId as string, $options: 'i' };
+        filterOptions.productTypeId = {
+          $regex: productTypeId as string,
+          $options: 'i',
+        };
       }
 
       sort = sortHelper(sortBy as string, sortOrder as string);
@@ -123,15 +126,15 @@ export class ProductsService extends BaseCrudService<Product> {
   }
 
   // GET /products/:id
-    async findProductById({ id }: { id: string }) {
-      const productExists = await this.findOne({
-        filter: { _id: id } as RootFilterQuery<Product>,
-      });
-  
-      if (!productExists) {
-        throw new NotFoundException('Product id not found');
-      }
-  
-      return productExists;
+  async findProductById({ id }: { id: string }) {
+    const productExists = await this.findOne({
+      filter: { _id: id } as RootFilterQuery<Product>,
+    });
+
+    if (!productExists) {
+      throw new NotFoundException('Product id not found');
     }
+
+    return productExists;
+  }
 }

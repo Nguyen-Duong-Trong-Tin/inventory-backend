@@ -8,5 +8,4 @@ export class CreateCustomerBodyDto {
   @IsString()
   @IsNotEmpty()
   phone: string;
-
 }

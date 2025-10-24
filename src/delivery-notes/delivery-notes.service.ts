@@ -100,7 +100,15 @@ export class DeliveryNotesService extends BaseCrudService<DeliveryNote> {
     let sort = {};
 
     if (filter) {
-      const { deliveryNo, date, warehouseId, employeeId, customerId, sortBy, sortOrder } = filter;
+      const {
+        deliveryNo,
+        date,
+        warehouseId,
+        employeeId,
+        customerId,
+        sortBy,
+        sortOrder,
+      } = filter;
 
       if (deliveryNo) {
         filterOptions.name = { $regex: deliveryNo as string, $options: 'i' };
@@ -111,17 +119,24 @@ export class DeliveryNotesService extends BaseCrudService<DeliveryNote> {
       }
 
       if (warehouseId) {
-        filterOptions.warehouseId = { $regex: warehouseId as string, $options: 'i' };
+        filterOptions.warehouseId = {
+          $regex: warehouseId as string,
+          $options: 'i',
+        };
       }
-
 
       if (employeeId) {
-        filterOptions.employeeId = { $regex: employeeId as string, $options: 'i' };
+        filterOptions.employeeId = {
+          $regex: employeeId as string,
+          $options: 'i',
+        };
       }
 
-
       if (customerId) {
-        filterOptions.customerId = { $regex: customerId as string, $options: 'i' };
+        filterOptions.customerId = {
+          $regex: customerId as string,
+          $options: 'i',
+        };
       }
 
       sort = sortHelper(sortBy as string, sortOrder as string);

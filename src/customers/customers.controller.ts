@@ -38,12 +38,12 @@ export class CustomersController {
   async deleteCustomer(@Param('id') id: string) {
     return this.customersService.deleteCustomer({ id });
   }
-  
+
   @Get('/')
   async findCustomers(@Query() query: FindCustomersQueryDto) {
     return this.customersService.findCustomers({ query });
   }
-  
+
   @Get('/:id')
   async findCustomerById(@Param('id') id: string) {
     return this.customersService.findOne({ filter: { _id: id } });

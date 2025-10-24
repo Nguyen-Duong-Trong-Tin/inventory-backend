@@ -7,12 +7,12 @@ import { DeliveryNote, DeliveryNoteSchema } from './schema/deliverynote.schema';
 
 @Module({
   imports: [
-      MongooseModule.forFeature([
-        { name: DeliveryNote.name, schema: DeliveryNoteSchema },
-      ]),
-    ],
+    MongooseModule.forFeature([
+      { name: DeliveryNote.name, schema: DeliveryNoteSchema },
+    ]),
+  ],
   controllers: [DeliveryNotesController],
   providers: [DeliveryNotesService],
-  export: [DeliveryNotesService]
+  exports: [DeliveryNotesService],
 })
 export class DeliveryNotesModule {}

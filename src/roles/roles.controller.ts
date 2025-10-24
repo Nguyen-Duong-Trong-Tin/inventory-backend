@@ -26,23 +26,20 @@ export class RolesController {
   }
 
   @Patch('/:id')
-  async updateRole(
-    @Param('id') id: string,
-    @Body() body: UpdateRoleBodyDto,
-  ) {
+  async updateRole(@Param('id') id: string, @Body() body: UpdateRoleBodyDto) {
     return this.rolesService.updateRole({ id, body });
   }
-  
+
   @Delete('/:id')
   async deleteRole(@Param('id') id: string) {
     return this.rolesService.deleteRole({ id });
   }
-  
+
   @Get('/')
   async findRoles(@Query() query: FindRolesQueryDto) {
     return this.rolesService.findRoles({ query });
   }
-  
+
   @Get('/:id')
   async findRoleById(@Param('id') id: string) {
     return this.rolesService.findOne({ filter: { _id: id } });

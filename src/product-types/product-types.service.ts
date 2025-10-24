@@ -10,10 +10,9 @@ import sortHelper from 'src/helpers/sort.helper';
 import paginationHelper from 'src/helpers/pagination.helper';
 
 @Injectable()
-export class ProductTypesService extends 
-BaseCrudService<ProductTypes> {
+export class ProductTypesService extends BaseCrudService<ProductTypes> {
   constructor(
-    @InjectModel(ProductTypes.name) 
+    @InjectModel(ProductTypes.name)
     private ProductTypesModel: Model<ProductTypes>,
   ) {
     super(ProductTypesModel);
@@ -40,7 +39,7 @@ BaseCrudService<ProductTypes> {
 
     const newProductTypes = await this.findOneAndUpdate({
       filter: { _id: id },
-      update: { name,description },
+      update: { name, description },
     });
     if (!newProductTypes) {
       throw new NotFoundException('Product Types id not found');
@@ -62,7 +61,7 @@ BaseCrudService<ProductTypes> {
     return deleteProductType;
   }
 
-// GET /product-types
+  // GET /product-types
   async findProductType({ query }: { query: FindProDuctTypeQueryDto }) {
     const { filter, page, limit } = query;
 
@@ -104,19 +103,17 @@ BaseCrudService<ProductTypes> {
       },
     };
   }
-  
-  
-    // GET /product-types/:id
-    async findProductTypeById({ id }: { id: string }) {
-      const ProductTypesExists = await this.findOne({
-        filter: { _id: id } as RootFilterQuery<ProductTypes>,
-      });
-  
-      if (!ProductTypesExists) {
-        throw new NotFoundException('Product Type id not found');
-      }
-  
-      return ProductTypesExists;
+
+  // GET /product-types/:id
+  async findProductTypeById({ id }: { id: string }) {
+    const ProductTypesExists = await this.findOne({
+      filter: { _id: id } as RootFilterQuery<ProductTypes>,
+    });
+
+    if (!ProductTypesExists) {
+      throw new NotFoundException('Product Type id not found');
     }
 
+    return ProductTypesExists;
+  }
 }

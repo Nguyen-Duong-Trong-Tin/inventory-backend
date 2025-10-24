@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 
 import { DeliveryNotesService } from './delivery-notes.service';
-import { CreateDeliveryNoteBodyDto, CreateDeliverynoteBodyDto } from './dto/create-deliverynote.dto';
+import { CreateDeliveryNoteBodyDto } from './dto/create-deliverynote.dto';
 import { UpdateDeliveryNoteBodyDto } from './dto/update-deliverynote.dto';
 import { FindDeliveryNotesQueryDto } from './dto/find-deliverynotes.dto';
 
@@ -19,7 +19,7 @@ import { FindDeliveryNotesQueryDto } from './dto/find-deliverynotes.dto';
   version: '1',
 })
 export class DeliveryNotesController {
-  constructor(private readonly deliveryNotesService: DeliveryNotesService) { }
+  constructor(private readonly deliveryNotesService: DeliveryNotesService) {}
 
   @Post('/')
   async createDeliveryNote(@Body() body: CreateDeliveryNoteBodyDto) {

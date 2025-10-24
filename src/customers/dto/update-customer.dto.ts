@@ -8,5 +8,4 @@ export class UpdateCustomerBodyDto {
   @IsString()
   @IsOptional()
   phone?: string;
-
 }

@@ -1,4 +1,4 @@
-import {  
+import {
   Body,
   Controller,
   Delete,
@@ -30,8 +30,8 @@ export class ProductsController {
   async updateProduct(
     @Param('id') id: string,
     @Body() body: UpdateProductBodyDto,
-  ){
-    return this.productsService.updateProduct({id, body});
+  ) {
+    return this.productsService.updateProduct({ id, body });
   }
 
   @Delete('/:id')

@@ -8,14 +8,12 @@ import { ProductsModule } from 'src/products/products.module';
 
 @Module({
   imports: [
-        MongooseModule.forFeature([
-          { name: Lot.name, schema: LotSchema },
-        ]),
-        WarehouseReceiptsModule,
-        ProductsModule,
-      ],
-    controllers: [LotsController],
-    providers: [LotsService],
-    exports: [LotsService]
+    MongooseModule.forFeature([{ name: Lot.name, schema: LotSchema }]),
+    WarehouseReceiptsModule,
+    ProductsModule,
+  ],
+  controllers: [LotsController],
+  providers: [LotsService],
+  exports: [LotsService],
 })
 export class LotsModule {}

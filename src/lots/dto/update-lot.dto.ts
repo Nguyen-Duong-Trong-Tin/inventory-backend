@@ -1,4 +1,10 @@
-import { IsDate, IsDateString, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsDate,
+  IsDateString,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class UpdateLotBodyDto {
   @IsNumber()
@@ -20,5 +26,4 @@ export class UpdateLotBodyDto {
   @IsString()
   @IsOptional()
   warehouseReceiptId?: string;
-
 }

@@ -19,7 +19,7 @@ import { FindWarehousesQueryDto } from './dto/find-warehouses.dto';
   version: '1',
 })
 export class WarehousesController {
-  constructor(private readonly warehousesService: WarehousesService) { }
+  constructor(private readonly warehousesService: WarehousesService) {}
 
   @Post('/')
   async createWarehouse(@Body() body: CreateWarehouseBodyDto) {

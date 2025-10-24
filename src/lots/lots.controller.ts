@@ -1,4 +1,4 @@
-import {  
+import {
   Body,
   Controller,
   Delete,
@@ -27,23 +27,20 @@ export class LotsController {
   }
 
   @Patch('/:id')
-  async updateLot(
-      @Param('id') id: string,
-      @Body() body: UpdateLotBodyDto,
-  ){
-      return this.lotsService.updateLot({id, body});
+  async updateLot(@Param('id') id: string, @Body() body: UpdateLotBodyDto) {
+    return this.lotsService.updateLot({ id, body });
   }
-  
+
   @Delete('/:id')
   async deleteLot(@Param('id') id: string) {
     return this.lotsService.deleteLot({ id });
   }
-  
+
   @Get('/')
   async findLots(@Query() query: FindLotsQueryDto) {
     return this.lotsService.findLots({ query });
   }
-  
+
   @Get('/:id')
   async findLotById(@Param('id') id: string) {
     return this.lotsService.findOne({ filter: { _id: id } });

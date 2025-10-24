@@ -13,6 +13,6 @@ import { ProductTypes, ProductTypeSchema } from './schema/product-type.schema';
   ],
   controllers: [ProductTypesController],
   providers: [ProductTypesService],
-  exports: [ProductTypesService]
+  exports: [ProductTypesService],
 })
 export class ProductTypesModule {}

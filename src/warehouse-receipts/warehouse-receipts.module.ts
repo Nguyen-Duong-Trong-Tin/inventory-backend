@@ -20,6 +20,6 @@ import { WarehousesModule } from 'src/warehouses/warehouses.module';
   ],
   controllers: [WarehouseReceiptsController],
   providers: [WarehouseReceiptsService],
-  exports: [WarehouseReceiptsService]
+  exports: [WarehouseReceiptsService],
 })
 export class WarehouseReceiptsModule {}

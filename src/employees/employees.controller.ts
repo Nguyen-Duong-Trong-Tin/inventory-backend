@@ -1,4 +1,4 @@
-import {  
+import {
   Body,
   Controller,
   Delete,
@@ -30,20 +30,20 @@ export class EmployeesController {
   async updateEmployee(
     @Param('id') id: string,
     @Body() body: UpdateEmployeeBodyDto,
-  ){
-    return this.employeesService.updateEmployee({id, body});
+  ) {
+    return this.employeesService.updateEmployee({ id, body });
   }
 
   @Delete('/:id')
   async deleteEmployee(@Param('id') id: string) {
     return this.employeesService.deleteEmployee({ id });
   }
-  
+
   @Get('/')
   async findEmployees(@Query() query: FindEmployeesQueryDto) {
     return this.employeesService.findEmployees({ query });
   }
-  
+
   @Get('/:id')
   async findEmployeeById(@Param('id') id: string) {
     return this.employeesService.findOne({ filter: { _id: id } });
