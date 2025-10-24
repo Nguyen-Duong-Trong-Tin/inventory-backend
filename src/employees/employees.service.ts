@@ -49,6 +49,13 @@ export class EmployeesService extends BaseCrudService<Employee> {
     }) {
       const { name, phone, email, address, password, roleId } = body;
 
+      const roleExists = await this.rolesService.findOne({
+            filter: { _id: roleId },
+      });
+        if (!roleExists) {
+            throw new NotFoundException('Role id not found');
+      }
+
       let updateData: any = { name, phone, email, address, roleId };
 
       // md5
