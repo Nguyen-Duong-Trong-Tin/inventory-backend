@@ -13,5 +13,6 @@ import { Warehouse, WarehouseSchema } from './schema/warehouse.schema';
   ],
   controllers: [WarehousesController],
   providers: [WarehousesService],
+  exports: [WarehousesService],
 })
 export class WarehousesModule {}

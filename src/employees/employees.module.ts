@@ -15,5 +15,6 @@ import { RolesModule } from 'src/roles/roles.module';
   ],
   controllers: [EmployeesController],
   providers: [EmployeesService],
+  exports: [EmployeesService],
 })
 export class EmployeesModule {}

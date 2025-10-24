@@ -4,20 +4,14 @@ import { WarehouseReceipt } from './schema/warehousereceipts.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, RootFilterQuery } from 'mongoose';
 import { CreateWarehouseReceiptBodyDto } from './dto/create-warehousereceipts.dto';
-import { RolesService } from 'src/roles/roles.service';
 import { UpdateWarehouseReceiptBodyDto } from './dto/update-warehousereceipts.dto';
 import { FindWarehousesReceiptsQueryDto } from './dto/find-warehousereceipts.dto';
 import sortHelper from 'src/helpers/sort.helper';
 import paginationHelper from 'src/helpers/pagination.helper';
-import { EmployeesService } from 'src/employees/employees.service';
 
 @Injectable()
 export class WarehouseReceiptsService extends BaseCrudService<WarehouseReceipt> {
   constructor(
-    private readonly roleService: RolesService,
-    private readonly employeesService: EmployeesService,
-    private readonly warehousesService: WarehouseReceiptsService,
-    private readonly suppliersService: WarehouseReceiptsService,
     @InjectModel(WarehouseReceipt.name)
     private warehouseReceiptModel: Model<WarehouseReceipt>,
   ) {
