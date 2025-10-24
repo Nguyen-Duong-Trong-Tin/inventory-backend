@@ -11,7 +11,7 @@ export class UpdateWarehouseReceiptBodyDto {
 
   @IsString()
   @IsNotEmpty()
-  supplierTypeId?: string;
+  supplierId?: string;
 
   @IsString()
   @IsNotEmpty()

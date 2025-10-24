@@ -8,12 +8,18 @@ import { UpdateWarehouseReceiptBodyDto } from './dto/update-warehousereceipts.dt
 import { FindWarehousesReceiptsQueryDto } from './dto/find-warehousereceipts.dto';
 import sortHelper from 'src/helpers/sort.helper';
 import paginationHelper from 'src/helpers/pagination.helper';
+import { WarehousesService } from 'src/warehouses/warehouses.service';
+import { EmployeesService } from 'src/employees/employees.service';
+import { SuppliersService } from 'src/suppliers/suppliers.service';
 
 @Injectable()
 export class WarehouseReceiptsService extends BaseCrudService<WarehouseReceipt> {
   constructor(
+    private readonly warehouseService: WarehousesService,
+    private readonly employeeService: EmployeesService,
+    private readonly suppliersService: SuppliersService,
     @InjectModel(WarehouseReceipt.name)
-    private warehouseReceiptModel: Model<WarehouseReceipt>,
+    private readonly warehouseReceiptModel: Model<WarehouseReceipt>,
   ) {
     super(warehouseReceiptModel);
   }
@@ -24,10 +30,35 @@ export class WarehouseReceiptsService extends BaseCrudService<WarehouseReceipt> 
   }: {
     body: CreateWarehouseReceiptBodyDto;
   }) {
-    const { date, receiptNo, supplierTypeId, warehouseId, employeeId } = body;
+    const { date, receiptNo, supplierId, warehouseId, employeeId } = body;
 
+    //Kiểm tra kho (warehouse)
+    const warehouseExists = await this.warehouseService.findOne({
+      filter: { _id: warehouseId },
+    });
+    if (!warehouseExists) {
+      throw new NotFoundException('Warehouse id not found');
+    }
+
+    //Kiểm tra nhân viên (employee)
+    const employeeExists = await this.employeeService.findOne({
+      filter: { _id: employeeId },
+    });
+    if (!employeeExists) {
+      throw new NotFoundException('Employee id not found');
+    }
+
+    //Kiểm tra nhà cung cấp (supplier)
+    const supplierExists = await this.suppliersService.findOne({
+      filter: { _id: supplierId },
+    });
+    if (!supplierExists) {
+      throw new NotFoundException('Supplier id not found');
+    }
+
+    //Tạo mới WarehouseReceipt
     return await this.create({
-      doc: { date, receiptNo },
+      doc: { date, receiptNo, supplierId, warehouseId, employeeId },
     });
   }
 
@@ -39,11 +70,11 @@ export class WarehouseReceiptsService extends BaseCrudService<WarehouseReceipt> 
     id: string;
     body: UpdateWarehouseReceiptBodyDto;
   }) {
-    const { date, receiptNo, supplierTypeId, warehouseId, employeeId } = body;
+    const { date, receiptNo, supplierId, warehouseId, employeeId } = body;
 
     const newWarehouseReceipt = await this.findOneAndUpdate({
       filter: { _id: id },
-      update: { date, receiptNo, supplierTypeId, warehouseId, employeeId },
+      update: { date, receiptNo, supplierId, warehouseId, employeeId },
     });
     if (!newWarehouseReceipt) {
       throw new NotFoundException('Warehouse Receipt id not found');
@@ -57,6 +88,7 @@ export class WarehouseReceiptsService extends BaseCrudService<WarehouseReceipt> 
     const deletedWarehouseReceipt = await this.findOneAndDelete({
       filter: { _id: id } as RootFilterQuery<WarehouseReceipt>,
     });
+
     if (!deletedWarehouseReceipt) {
       throw new NotFoundException('Warehouse Receipt id not found');
     }
@@ -79,7 +111,7 @@ export class WarehouseReceiptsService extends BaseCrudService<WarehouseReceipt> 
       const {
         date,
         receiptNo,
-        supplierTypeId,
+        supplierId,
         warehouseId,
         employeeId,
         sortBy,
@@ -97,9 +129,9 @@ export class WarehouseReceiptsService extends BaseCrudService<WarehouseReceipt> 
         };
       }
 
-      if (supplierTypeId) {
-        filterOptions.supplierTypeId = {
-          $regex: supplierTypeId as string,
+      if (supplierId) {
+        filterOptions.supplierId = {
+          $regex: supplierId as string,
           $options: 'i',
         };
       }

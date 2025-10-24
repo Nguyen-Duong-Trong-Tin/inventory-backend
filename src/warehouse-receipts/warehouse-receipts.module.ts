@@ -14,6 +14,7 @@ import { WarehousesModule } from 'src/warehouses/warehouses.module';
     MongooseModule.forFeature([
       { name: 'WarehouseReceipt', schema: WarehouseReceiptSchema },
     ]),
+    
     SuppliersModule,
     EmployeesModule,
     WarehousesModule,

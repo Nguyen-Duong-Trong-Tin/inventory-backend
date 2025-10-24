@@ -11,13 +11,13 @@ export class UpdateDeliveryNoteBodyDto {
 
   @IsNumber()
   @IsOptional()
-  warehouseId: string;
+  warehouseId?: string;
 
   @IsString()
   @IsOptional()
-  employeeId: string;
+  employeeId?: string;
 
   @IsString()
   @IsOptional()
-  customerId: string;
+  customerId?: string;
 }
