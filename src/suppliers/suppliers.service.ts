@@ -1,6 +1,10 @@
 import { Model, RootFilterQuery } from 'mongoose';
 
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
 import { BaseCrudService } from 'src/cores/base-crud.core';
@@ -11,11 +15,15 @@ import { UpdateSupplierBodyDto } from './dto/update-supplier.dto';
 import { FindSuppliersQueryDto } from './dto/find-suppliers.dto';
 import sortHelper from 'src/helpers/sort.helper';
 import paginationHelper from 'src/helpers/pagination.helper';
+import { EmployeesService } from 'src/employees/employees.service';
+import { RolesService } from 'src/roles/roles.service';
 
 @Injectable()
 export class SuppliersService extends BaseCrudService<Supplier> {
   constructor(
     @InjectModel(Supplier.name) private supplierModel: Model<Supplier>,
+    private readonly employeesService: EmployeesService,
+    private readonly roleService: RolesService,
   ) {
     super(supplierModel);
   }
@@ -33,10 +41,33 @@ export class SuppliersService extends BaseCrudService<Supplier> {
   async updateSupplier({
     id,
     body,
+    employee,
   }: {
     id: string;
     body: UpdateSupplierBodyDto;
+    employee: { userId: string; email: string };
   }) {
+    const { userId } = employee;
+
+    const employeeExists = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
+    if (!employeeExists) {
+      throw new UnauthorizedException('Employee id not found');
+    }
+
+    const roleExists = await this.roleService.findOne({
+      filter: { _id: employeeExists.roleId },
+    });
+    if (!roleExists) {
+      throw new UnauthorizedException('Role id not found');
+    }
+
+    const { permisstion } = roleExists;
+    if (!permisstion.find((item) => item === 'update-supplier')) {
+      throw new UnauthorizedException('You dont have this permission');
+    }
+
     const { name, email, phone, address } = body;
 
     const newSupplier = await this.findOneAndUpdate({

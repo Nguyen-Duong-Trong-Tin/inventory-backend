@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 
@@ -34,8 +35,9 @@ export class SuppliersController {
   async updateSupplier(
     @Param('id') id: string,
     @Body() body: UpdateSupplierBodyDto,
+    @Request() { user }: { user: { userId: string; email: string } },
   ) {
-    return this.suppliersService.updateSupplier({ id, body });
+    return this.suppliersService.updateSupplier({ id, body, employee: user });
   }
 
   @Delete('/:id')
