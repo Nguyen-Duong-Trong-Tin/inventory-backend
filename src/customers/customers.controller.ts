@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 
@@ -25,8 +26,10 @@ export class CustomersController {
 
   @Post('/')
   @UseGuards(JwtAuthGuard)
-  async createCustomer(@Body() body: CreateCustomerBodyDto) {
-    return this.customersService.createCustomer({ body });
+  async createCustomer(
+    @Body() body: CreateCustomerBodyDto,
+    @Request() { user }: { user: { userId: string; email: string } },) {
+    return this.customersService.createCustomer({ body, employee: user });
   }
 
   @Patch('/:id')
@@ -34,20 +37,25 @@ export class CustomersController {
   async updateCustomer(
     @Param('id') id: string,
     @Body() body: UpdateCustomerBodyDto,
+    @Request() { user }: { user: { userId: string; email: string } },
   ) {
-    return this.customersService.updateCustomer({ id, body });
+    return this.customersService.updateCustomer({ id, body, employee: user });
   }
 
   @Delete('/:id')
   @UseGuards(JwtAuthGuard)
-  async deleteCustomer(@Param('id') id: string) {
-    return this.customersService.deleteCustomer({ id });
+  async deleteCustomer(
+    @Param('id') id: string,
+    @Request() { user }: { user: { userId: string; email: string } },) {
+    return this.customersService.deleteCustomer({ id, employee: user });
   }
 
   @Get('/')
   @UseGuards(JwtAuthGuard)
-  async findCustomers(@Query() query: FindCustomersQueryDto) {
-    return this.customersService.findCustomers({ query });
+  async findCustomers(
+    @Query() query: FindCustomersQueryDto,
+    @Request() { user }: { user: { userId: string; email: string } },) {
+    return this.customersService.findCustomers({ query, employee: user });
   }
 
   @Get('/:id')

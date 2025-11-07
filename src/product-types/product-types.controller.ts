@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 
@@ -25,8 +26,10 @@ export class ProductTypesController {
 
   @Post('/')
   @UseGuards(JwtAuthGuard)
-  async createProductType(@Body() body: CreateProductTypeBodyDto) {
-    return await this.productTypesService.createProductType({ body });
+  async createProductType(
+    @Body() body: CreateProductTypeBodyDto,
+    @Request() { user }: { user: { userId: string; email: string } },) {
+    return await this.productTypesService.createProductType({ body, employee: user  });
   }
 
   @Patch('/:id')
@@ -34,20 +37,25 @@ export class ProductTypesController {
   async updateProductTypes(
     @Param('id') id: string,
     @Body() body: UpdateProductTypesBodyDto,
+    @Request() { user }: { user: { userId: string; email: string } },
   ) {
-    return this.productTypesService.updateProductTypes({ id, body });
+    return this.productTypesService.updateProductTypes({ id, body, employee: user  });
   }
 
   @Delete('/:id')
   @UseGuards(JwtAuthGuard)
-  async deleteProductTypes(@Param('id') id: string) {
-    return this.productTypesService.deleteProductType({ id });
+  async deleteProductTypes(
+    @Param('id') id: string,
+    @Request() { user }: { user: { userId: string; email: string } },) {
+    return this.productTypesService.deleteProductType({ id, employee: user  });
   }
 
   @Get('/')
   @UseGuards(JwtAuthGuard)
-  async findProductType(@Query() query: FindProDuctTypeQueryDto) {
-    return this.productTypesService.findProductType({ query });
+  async findProductType(
+    @Query() query: FindProDuctTypeQueryDto,
+    @Request() { user }: { user: { userId: string; email: string } },) {
+    return this.productTypesService.findProductType({ query, employee: user  });
   }
 
   @Get('/:id')

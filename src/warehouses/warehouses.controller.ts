@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 
@@ -25,8 +26,10 @@ export class WarehousesController {
 
   @Post('/')
   @UseGuards(JwtAuthGuard)
-  async createWarehouse(@Body() body: CreateWarehouseBodyDto) {
-    return this.warehousesService.createWarehouse({ body });
+  async createWarehouse(
+    @Body() body: CreateWarehouseBodyDto,
+    @Request() { user }: { user: { userId: string; email: string } },) {
+    return this.warehousesService.createWarehouse({ body, employee: user  });
   }
 
   @Patch('/:id')
@@ -34,20 +37,26 @@ export class WarehousesController {
   async updateWarehouse(
     @Param('id') id: string,
     @Body() body: UpdateWarehouseBodyDto,
+    @Request() { user }: { user: { userId: string; email: string } },
   ) {
-    return this.warehousesService.updateWarehouse({ id, body });
+    return this.warehousesService.updateWarehouse({ id, body, employee: user  });
   }
 
   @Delete('/:id')
   @UseGuards(JwtAuthGuard)
-  async deleteWarehouse(@Param('id') id: string) {
-    return this.warehousesService.deletewarehouse({ id });
+  async deleteWarehouse(
+    @Param('id') id: string,
+    @Request() { user }: { user: { userId: string; email: string } },) {
+    return this.warehousesService.deletewarehouse({ id, employee: user  });
   }
 
   @Get('/')
   @UseGuards(JwtAuthGuard)
-  async findWarehouses(@Query() query: FindWarehousesQueryDto) {
-    return this.warehousesService.findWarehouses({ query });
+  async findWarehouses(
+    @Query() query: FindWarehousesQueryDto,
+    @Request() { user }: { user: { userId: string; email: string } },
+  ) {
+    return this.warehousesService.findWarehouses({ query, employee: user  });
   }
 
   @Get('/:id')

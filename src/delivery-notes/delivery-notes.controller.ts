@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 
@@ -25,8 +26,10 @@ export class DeliveryNotesController {
 
   @Post('/')
   @UseGuards(JwtAuthGuard)
-  async createDeliveryNote(@Body() body: CreateDeliveryNoteBodyDto) {
-    return this.deliveryNotesService.createDeliveryNote({ body });
+  async createDeliveryNote(
+    @Body() body: CreateDeliveryNoteBodyDto,
+    @Request() { user }: { user: { userId: string; email: string } },) {
+    return this.deliveryNotesService.createDeliveryNote({ body, employee: user  });
   }
 
   @Patch('/:id')
@@ -34,20 +37,25 @@ export class DeliveryNotesController {
   async updateDeliveryNote(
     @Param('id') id: string,
     @Body() body: UpdateDeliveryNoteBodyDto,
+    @Request() { user }: { user: { userId: string; email: string } },
   ) {
-    return this.deliveryNotesService.updateDeliveryNote({ id, body });
+    return this.deliveryNotesService.updateDeliveryNote({ id, body, employee: user  });
   }
 
   @Delete('/:id')
   @UseGuards(JwtAuthGuard)
-  async deleteDeliveryNote(@Param('id') id: string) {
-    return this.deliveryNotesService.deletedeliverynote({ id });
+  async deleteDeliveryNote(
+    @Param('id') id: string,
+    @Request() { user }: { user: { userId: string; email: string } },) {
+    return this.deliveryNotesService.deletedeliverynote({ id, employee: user  });
   }
 
   @Get('/')
   @UseGuards(JwtAuthGuard)
-  async findDeliveryNotes(@Query() query: FindDeliveryNotesQueryDto) {
-    return this.deliveryNotesService.findDeliveryNotes({ query });
+  async findDeliveryNotes(
+    @Query() query: FindDeliveryNotesQueryDto,
+    @Request() { user }: { user: { userId: string; email: string } },) {
+    return this.deliveryNotesService.findDeliveryNotes({ query, employee: user  });
   }
 
   @Get('/:id')

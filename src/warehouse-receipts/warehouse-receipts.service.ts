@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { BaseCrudService } from 'src/cores/base-crud.core';
 import { WarehouseReceipt } from './schema/warehousereceipts.schema';
 import { InjectModel } from '@nestjs/mongoose';
@@ -8,43 +8,74 @@ import { UpdateWarehouseReceiptBodyDto } from './dto/update-warehousereceipts.dt
 import { FindWarehousesReceiptsQueryDto } from './dto/find-warehousereceipts.dto';
 import sortHelper from 'src/helpers/sort.helper';
 import paginationHelper from 'src/helpers/pagination.helper';
+import { EmployeesService } from 'src/employees/employees.service';
+import { RolesService } from 'src/roles/roles.service';
 
 @Injectable()
 export class WarehouseReceiptsService extends BaseCrudService<WarehouseReceipt> {
   constructor(
     @InjectModel(WarehouseReceipt.name)
     private warehouseReceiptModel: Model<WarehouseReceipt>,
+    private readonly employeesService: EmployeesService,
+    private readonly roleService: RolesService,
   ) {
     super(warehouseReceiptModel);
   }
 
   // POST /warehouse-receipts
   async createWarehouseReceipt({
-    body,
-  }: {
-    body: CreateWarehouseReceiptBodyDto;
-  }) {
-    const { date, receiptNo, supplierTypeId, warehouseId, employeeId } = body;
+      body,
+      employee,
+    }: {
+      body: CreateWarehouseReceiptBodyDto;
+      employee: { userId: string; email: string };
+    }) {
+      const { userId } = employee;
+      const { date, receiptNo, supplierId, warehouseId, employeeId } = body;
 
-    return await this.create({
-      doc: { date, receiptNo },
-    });
-  }
+      const actor = await this.employeesService.findOne({ filter: { _id: userId } });
+      if (!actor) throw new UnauthorizedException('Employee id not found');
+
+      const role = await this.roleService.findOne({ filter: { _id: actor.roleId } });
+      if (!role) throw new UnauthorizedException('Role id not found');
+
+      if (!role.permisstion?.includes('create-warehouse-receipt')) {
+        throw new UnauthorizedException('You don’t have permission to create warehouse receipts');
+      }
+
+      return this.create({
+        doc: { date, receiptNo, supplierId, warehouseId, employeeId },
+      });
+    }
 
   // PATCH /warehouse-receipts/:id
-  async updateWarehouseReceipt({
+ async updateWarehouseReceipt({
     id,
     body,
+    employee,
   }: {
     id: string;
     body: UpdateWarehouseReceiptBodyDto;
+    employee: { userId: string; email: string };
   }) {
+    const { userId } = employee;
     const { date, receiptNo, supplierTypeId, warehouseId, employeeId } = body;
+
+    const actor = await this.employeesService.findOne({ filter: { _id: userId } });
+    if (!actor) throw new UnauthorizedException('Employee id not found');
+
+    const role = await this.roleService.findOne({ filter: { _id: actor.roleId } });
+    if (!role) throw new UnauthorizedException('Role id not found');
+
+    if (!role.permisstion?.includes('update-warehouse-receipt')) {
+      throw new UnauthorizedException('You don’t have permission to update warehouse receipts');
+    }
 
     const newWarehouseReceipt = await this.findOneAndUpdate({
       filter: { _id: id },
       update: { date, receiptNo, supplierTypeId, warehouseId, employeeId },
     });
+
     if (!newWarehouseReceipt) {
       throw new NotFoundException('Warehouse Receipt id not found');
     }
@@ -53,10 +84,29 @@ export class WarehouseReceiptsService extends BaseCrudService<WarehouseReceipt> 
   }
 
   //DELETE /warehouse-receipts/:id
-  async deleteWarehouseReceipt({ id }: { id: string }) {
+  async deleteWarehouseReceipt({
+    id,
+    employee,
+  }: {
+    id: string;
+    employee: { userId: string; email: string };
+  }) {
+    const { userId } = employee;
+
+    const actor = await this.employeesService.findOne({ filter: { _id: userId } });
+    if (!actor) throw new UnauthorizedException('Employee id not found');
+
+    const role = await this.roleService.findOne({ filter: { _id: actor.roleId } });
+    if (!role) throw new UnauthorizedException('Role id not found');
+
+    if (!role.permisstion?.includes('delete-warehouse-receipt')) {
+      throw new UnauthorizedException('You don’t have permission to delete warehouse receipts');
+    }
+
     const deletedWarehouseReceipt = await this.findOneAndDelete({
       filter: { _id: id } as RootFilterQuery<WarehouseReceipt>,
     });
+
     if (!deletedWarehouseReceipt) {
       throw new NotFoundException('Warehouse Receipt id not found');
     }
@@ -67,11 +117,24 @@ export class WarehouseReceiptsService extends BaseCrudService<WarehouseReceipt> 
   // GET /warehouse-receipts
   async findWarehouseReceipts({
     query,
+    employee,
   }: {
     query: FindWarehousesReceiptsQueryDto;
+    employee: { userId: string; email: string };
   }) {
-    const { filter, page, limit } = query;
+    const { userId } = employee;
 
+    const actor = await this.employeesService.findOne({ filter: { _id: userId } });
+    if (!actor) throw new UnauthorizedException('Employee id not found');
+
+    const role = await this.roleService.findOne({ filter: { _id: actor.roleId } });
+    if (!role) throw new UnauthorizedException('Role id not found');
+
+    if (!role.permisstion?.includes('read-warehouse-receipt')) {
+      throw new UnauthorizedException('You don’t have permission to view warehouse receipts');
+    }
+
+    const { filter, page, limit } = query;
     const filterOptions: RootFilterQuery<WarehouseReceipt> = {};
     let sort = {};
 
@@ -91,34 +154,22 @@ export class WarehouseReceiptsService extends BaseCrudService<WarehouseReceipt> 
       }
 
       if (receiptNo) {
-        filterOptions.receiptNo = {
-          $regex: receiptNo as string,
-          $options: 'i',
-        };
+        filterOptions.receiptNo = { $regex: receiptNo, $options: 'i' };
       }
 
       if (supplierTypeId) {
-        filterOptions.supplierTypeId = {
-          $regex: supplierTypeId as string,
-          $options: 'i',
-        };
+        filterOptions.supplierTypeId = { $regex: supplierTypeId, $options: 'i' };
       }
 
       if (warehouseId) {
-        filterOptions.warehouseId = {
-          $regex: warehouseId as string,
-          $options: 'i',
-        };
+        filterOptions.warehouseId = { $regex: warehouseId, $options: 'i' };
       }
 
       if (employeeId) {
-        filterOptions.employeeId = {
-          $regex: employeeId as string,
-          $options: 'i',
-        };
+        filterOptions.employeeId = { $regex: employeeId, $options: 'i' };
       }
 
-      sort = sortHelper(sortBy as string, sortOrder as string);
+      sort = sortHelper(sortBy, sortOrder);
     }
 
     const pagination = paginationHelper(page, limit);

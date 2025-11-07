@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 
@@ -25,26 +26,35 @@ export class LotsController {
 
   @Post('/')
   @UseGuards(JwtAuthGuard)
-  async createLot(@Body() body: CreateLotBodyDto) {
-    return this.lotsService.createLot({ body });
+  async createLot(
+    @Body() body: CreateLotBodyDto,
+    @Request() { user }: { user: { userId: string; email: string } },) {
+    return this.lotsService.createLot({ body, employee: user  });
   }
 
   @Patch('/:id')
   @UseGuards(JwtAuthGuard)
-  async updateLot(@Param('id') id: string, @Body() body: UpdateLotBodyDto) {
-    return this.lotsService.updateLot({ id, body });
+  async updateLot(
+    @Param('id') id: string, 
+    @Body() body: UpdateLotBodyDto,
+    @Request() { user }: { user: { userId: string; email: string } },) {
+    return this.lotsService.updateLot({ id, body, employee: user  });
   }
 
   @Delete('/:id')
   @UseGuards(JwtAuthGuard)
-  async deleteLot(@Param('id') id: string) {
-    return this.lotsService.deleteLot({ id });
+  async deleteLot(
+    @Param('id') id: string,
+    @Request() { user }: { user: { userId: string; email: string } },) {
+    return this.lotsService.deleteLot({ id, employee: user  });
   }
 
   @Get('/')
   @UseGuards(JwtAuthGuard)
-  async findLots(@Query() query: FindLotsQueryDto) {
-    return this.lotsService.findLots({ query });
+  async findLots(
+    @Query() query: FindLotsQueryDto,
+    @Request() { user }: { user: { userId: string; email: string } },) {
+    return this.lotsService.findLots({ query, employee: user  });
   }
 
   @Get('/:id')

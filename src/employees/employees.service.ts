@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, RootFilterQuery } from 'mongoose';
 import { BaseCrudService } from 'src/cores/base-crud.core';
@@ -14,8 +14,11 @@ import { FindEmployeesQueryDto } from './dto/find-employees.dto';
 @Injectable()
 export class EmployeesService extends BaseCrudService<Employee> {
   constructor(
+    @Inject(forwardRef(() => RolesService)) 
     private readonly rolesService: RolesService,
-    @InjectModel(Employee.name) private employeeModel: Model<Employee>,
+
+    @InjectModel(Employee.name)
+    private employeeModel: Model<Employee>,
   ) {
     super(employeeModel);
   }
@@ -31,8 +34,31 @@ export class EmployeesService extends BaseCrudService<Employee> {
   }
 
   // POST /employees
-  async createEmployee({ body }: { body: CreateEmployeeBodyDto }) {
+  async createEmployee({
+    body,
+    employee,
+  }: {
+    body: CreateEmployeeBodyDto;
+    employee: { userId: string; email: string };
+  }) {
+    const { userId } = employee;
     const { name, phone, email, address, password, roleId } = body;
+
+    const creator = await this.findOne({ filter: { _id: userId } });
+    if (!creator) {
+      throw new UnauthorizedException('Employee id not found');
+    }
+
+    const creatorRole = await this.rolesService.findOne({
+      filter: { _id: creator.roleId },
+    });
+    if (!creatorRole) {
+      throw new UnauthorizedException('Role id not found');
+    }
+
+    if (!creatorRole.permisstion?.includes('create-employee')) {
+      throw new UnauthorizedException('You don’t have permission to create employees');
+    }
 
     const roleExists = await this.rolesService.findOne({
       filter: { _id: roleId },
@@ -41,11 +67,7 @@ export class EmployeesService extends BaseCrudService<Employee> {
       throw new NotFoundException('Role id not found');
     }
 
-    // md5
-    const hashedPassword = crypto
-      .createHash('md5')
-      .update(password)
-      .digest('hex');
+    const hashedPassword = crypto.createHash('md5').update(password).digest('hex');
 
     return await this.create({
       doc: { name, phone, email, address, password: hashedPassword, roleId },
@@ -56,11 +78,26 @@ export class EmployeesService extends BaseCrudService<Employee> {
   async updateEmployee({
     id,
     body,
+    employee,
   }: {
     id: string;
     body: UpdateEmployeeBodyDto;
+    employee: { userId: string; email: string };
   }) {
+    const { userId } = employee;
     const { name, phone, email, address, password, roleId } = body;
+
+    const actor = await this.findOne({ filter: { _id: userId } });
+    if (!actor) {
+      throw new UnauthorizedException('Employee id not found');
+    }
+
+    const actorRole = await this.rolesService.findOne({
+      filter: { _id: actor.roleId },
+    });
+    if (!actorRole || !actorRole.permisstion?.includes('update-employee')) {
+      throw new UnauthorizedException('You don’t have permission to update employees');
+    }
 
     const roleExists = await this.rolesService.findOne({
       filter: { _id: roleId },
@@ -71,28 +108,44 @@ export class EmployeesService extends BaseCrudService<Employee> {
 
     let updateData: any = { name, phone, email, address, roleId };
 
-    // md5
     if (password) {
-      updateData.password = crypto
-        .createHash('md5')
-        .update(password)
-        .digest('hex');
+      updateData.password = crypto.createHash('md5').update(password).digest('hex');
     }
 
-    const newEmployee = await this.findOneAndUpdate({
+    const updatedEmployee = await this.findOneAndUpdate({
       filter: { _id: id },
       update: updateData,
     });
 
-    if (!newEmployee) {
+    if (!updatedEmployee) {
       throw new NotFoundException('Employee id not found');
     }
 
-    return newEmployee;
+    return updatedEmployee;
   }
 
   // DELETE /employee/:id
-  async deleteEmployee({ id }: { id: string }) {
+  async deleteEmployee({
+    id,
+    employee,
+  }: {
+    id: string;
+    employee: { userId: string; email: string };
+  }) {
+    const { userId } = employee;
+
+    const actor = await this.findOne({ filter: { _id: userId } });
+    if (!actor) {
+      throw new UnauthorizedException('Employee id not found');
+    }
+
+    const actorRole = await this.rolesService.findOne({
+      filter: { _id: actor.roleId },
+    });
+    if (!actorRole || !actorRole.permisstion?.includes('delete-employee')) {
+      throw new UnauthorizedException('You don’t have permission to delete employees');
+    }
+
     const deletedEmployee = await this.findOneAndDelete({
       filter: { _id: id } as RootFilterQuery<Employee>,
     });
@@ -105,36 +158,41 @@ export class EmployeesService extends BaseCrudService<Employee> {
   }
 
   // GET /employees
-  async findEmployees({ query }: { query: FindEmployeesQueryDto }) {
-    const { filter, page, limit } = query;
+  async findEmployees({
+    query,
+    employee,
+  }: {
+    query: FindEmployeesQueryDto;
+    employee: { userId: string; email: string };
+  }) {
+    const { userId } = employee;
 
+    const actor = await this.findOne({ filter: { _id: userId } });
+    if (!actor) {
+      throw new UnauthorizedException('Employee id not found');
+    }
+
+    const actorRole = await this.rolesService.findOne({
+      filter: { _id: actor.roleId },
+    });
+    if (!actorRole || !actorRole.permisstion?.includes('read-employee')) {
+      throw new UnauthorizedException('You don’t have permission to view employees');
+    }
+
+    const { filter, page, limit } = query;
     const filterOptions: RootFilterQuery<Employee> = {};
     let sort = {};
 
     if (filter) {
       const { name, phone, email, address, roleId, sortBy, sortOrder } = filter;
 
-      if (name) {
-        filterOptions.name = { $regex: name as string, $options: 'i' };
-      }
+      if (name) filterOptions.name = { $regex: name, $options: 'i' };
+      if (phone) filterOptions.phone = { $regex: phone, $options: 'i' };
+      if (email) filterOptions.email = { $regex: email, $options: 'i' };
+      if (address) filterOptions.address = { $regex: address, $options: 'i' };
+      if (roleId) filterOptions.roleId = { $regex: roleId, $options: 'i' };
 
-      if (phone) {
-        filterOptions.phone = { $regex: phone as string, $options: 'i' };
-      }
-
-      if (email) {
-        filterOptions.email = { $regex: email as string, $options: 'i' };
-      }
-
-      if (address) {
-        filterOptions.address = { $regex: address as string, $options: 'i' };
-      }
-
-      if (roleId) {
-        filterOptions.roleId = { $regex: roleId as string, $options: 'i' };
-      }
-
-      sort = sortHelper(sortBy as string, sortOrder as string);
+      sort = sortHelper(sortBy, sortOrder);
     }
 
     const pagination = paginationHelper(page, limit);
