@@ -26,8 +26,13 @@ export class SuppliersController {
 
   @Post('/')
   @UseGuards(JwtAuthGuard)
-  async createSupplier(@Body() body: CreateSupplierBodyDto) {
-    return this.suppliersService.createSupplier({ body });
+  async createSupplier(
+    @Body() body: CreateSupplierBodyDto,
+    @Request() { user }: { user: { userId: string; email: string } },
+  ) {
+    return this.suppliersService.createSupplier({
+      body, employee: user 
+    });
   }
 
   @Patch('/:id')
@@ -42,14 +47,20 @@ export class SuppliersController {
 
   @Delete('/:id')
   @UseGuards(JwtAuthGuard)
-  async deleteSupplier(@Param('id') id: string) {
-    return this.suppliersService.deleteSupplier({ id });
+  async deleteSupplier(
+    @Param('id') id: string,
+    @Request() { user }: { user: { userId: string; email: string } },
+  ) {
+    return this.suppliersService.deleteSupplier({ id, employee: user });
   }
 
-  @Get('/')
+ @Get('/')
   @UseGuards(JwtAuthGuard)
-  async findSuppliers(@Query() query: FindSuppliersQueryDto) {
-    return this.suppliersService.findSuppliers({ query });
+  async findSuppliers(
+    @Query() query: FindSuppliersQueryDto,
+    @Request() { user }: { user: { userId: string; email: string } },
+  ) {
+    return this.suppliersService.findSuppliers({ query, employee: user });
   }
 
   @Get('/:id')

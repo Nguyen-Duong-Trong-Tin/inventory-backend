@@ -27,8 +27,10 @@ export class EmployeesController {
 
   @Post('/')
   @UseGuards(JwtAuthGuard)
-  async createEmployee(@Body() body: CreateEmployeeBodyDto) {
-    return this.employeesService.createEmployee({ body });
+  async createEmployee(
+    @Body() body: CreateEmployeeBodyDto,
+    @Request() { user }: { user: { userId: string; email: string } },) {
+    return this.employeesService.createEmployee({ body, employee: user });
   }
 
   @Patch('/:id')
@@ -36,20 +38,25 @@ export class EmployeesController {
   async updateEmployee(
     @Param('id') id: string,
     @Body() body: UpdateEmployeeBodyDto,
+    @Request() { user }: { user: { userId: string; email: string } },
   ) {
-    return this.employeesService.updateEmployee({ id, body });
+    return this.employeesService.updateEmployee({ id, body, employee: user  });
   }
 
   @Delete('/:id')
   @UseGuards(JwtAuthGuard)
-  async deleteEmployee(@Param('id') id: string) {
-    return this.employeesService.deleteEmployee({ id });
+  async deleteEmployee(@Param('id') id: string,
+  @Request() { user }: { user: { userId: string; email: string } },) {
+    return this.employeesService.deleteEmployee({ id, employee: user });
   }
 
   @Get('/')
   @UseGuards(JwtAuthGuard)
-  async findEmployees(@Query() query: FindEmployeesQueryDto) {
-    return this.employeesService.findEmployees({ query });
+  async findEmployees(
+    @Query() query: FindEmployeesQueryDto,
+     @Request() { user }: { user: { userId: string; email: string } },
+  ) {
+    return this.employeesService.findEmployees({ query, employee: user });
   }
 
   @Get('/:id')

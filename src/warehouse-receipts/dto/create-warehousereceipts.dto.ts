@@ -11,7 +11,7 @@ export class CreateWarehouseReceiptBodyDto {
 
   @IsString()
   @IsNotEmpty()
-  supplierTypeId: string;
+  supplierId: string;
 
   @IsString()
   @IsNotEmpty()

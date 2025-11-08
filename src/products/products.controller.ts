@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 
@@ -25,8 +26,10 @@ export class ProductsController {
 
   @Post('/')
   @UseGuards(JwtAuthGuard)
-  async createProduct(@Body() body: CreateProductBodyDto) {
-    return this.productsService.createProduct({ body });
+  async createProduct(
+    @Body() body: CreateProductBodyDto,
+    @Request() { user }: { user: { userId: string; email: string } },) {
+    return this.productsService.createProduct({ body, employee: user  });
   }
 
   @Patch('/:id')
@@ -34,20 +37,25 @@ export class ProductsController {
   async updateProduct(
     @Param('id') id: string,
     @Body() body: UpdateProductBodyDto,
+    @Request() { user }: { user: { userId: string; email: string } },
   ) {
-    return this.productsService.updateProduct({ id, body });
+    return this.productsService.updateProduct({ id, body, employee: user  });
   }
 
   @Delete('/:id')
   @UseGuards(JwtAuthGuard)
-  async deleteProduct(@Param('id') id: string) {
-    return this.productsService.deleteproduct({ id });
+  async deleteProduct(
+    @Param('id') id: string,
+    @Request() { user }: { user: { userId: string; email: string } },) {
+    return this.productsService.deleteproduct({ id, employee: user  });
   }
 
   @Get('/')
   @UseGuards(JwtAuthGuard)
-  async findProducts(@Query() query: FindProductsQueryDto) {
-    return this.productsService.findProducts({ query });
+  async findProducts(
+    @Query() query: FindProductsQueryDto,
+    @Request() { user }: { user: { userId: string; email: string } },) {
+    return this.productsService.findProducts({ query, employee: user  });
   }
 
   @Get('/:id')

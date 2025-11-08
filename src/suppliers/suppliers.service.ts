@@ -29,7 +29,35 @@ export class SuppliersService extends BaseCrudService<Supplier> {
   }
 
   // POST /suppliers
-  async createSupplier({ body }: { body: CreateSupplierBodyDto }) {
+  async createSupplier({
+    body,
+    employee,
+  }: {
+    body: CreateSupplierBodyDto;
+    employee: { userId: string; email: string };
+  }) {
+  
+    const { userId } = employee;
+
+    const employeeExists = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
+    if (!employeeExists) {
+      throw new UnauthorizedException('Employee id not found');
+    }
+
+    const roleExists = await this.roleService.findOne({
+      filter: { _id: employeeExists.roleId },
+    });
+    if (!roleExists) {
+      throw new UnauthorizedException('Role id not found');
+    }
+
+    const { permisstion } = roleExists;
+    if (!permisstion.find((item) => item === 'create-supplier')) {
+      throw new UnauthorizedException('You dont have this permission');
+    }
+
     const { name, email, phone, address } = body;
 
     return await this.create({
@@ -82,7 +110,35 @@ export class SuppliersService extends BaseCrudService<Supplier> {
   }
 
   // DELETE /suppliers/:id
-  async deleteSupplier({ id }: { id: string }) {
+  async deleteSupplier({
+    id,
+    employee,
+  }: {
+    id: string;
+    employee: { userId: string; email: string };
+  }) {
+    const { userId } = employee;
+
+    const employeeExists = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
+    if (!employeeExists) {
+      throw new UnauthorizedException('Employee id not found');
+    }
+
+    const roleExists = await this.roleService.findOne({
+      filter: { _id: employeeExists.roleId },
+    });
+    if (!roleExists) {
+      throw new UnauthorizedException('Role id not found');
+    }
+
+    const { permisstion } = roleExists;
+
+    if (!permisstion.find((item) => item === 'delete-supplier')) {
+      throw new UnauthorizedException('You don’t have this permission');
+    }
+
     const deletedSupplier = await this.findOneAndDelete({
       filter: { _id: id } as RootFilterQuery<Supplier>,
     });
@@ -94,10 +150,35 @@ export class SuppliersService extends BaseCrudService<Supplier> {
     return deletedSupplier;
   }
 
-  // GET /suppliers
-  async findSuppliers({ query }: { query: FindSuppliersQueryDto }) {
-    const { filter, page, limit } = query;
+  async findSuppliers({
+    query,
+    employee,
+  }: {
+    query: FindSuppliersQueryDto;
+    employee: { userId: string; email: string };
+  }) {
+    const { userId } = employee;
 
+    const employeeExists = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
+    if (!employeeExists) {
+      throw new UnauthorizedException('Employee id not found');
+    }
+
+    const roleExists = await this.roleService.findOne({
+      filter: { _id: employeeExists.roleId },
+    });
+    if (!roleExists) {
+      throw new UnauthorizedException('Role id not found');
+    }
+
+    const { permisstion } = roleExists;
+    if (!permisstion?.includes('read-supplier')) {
+      throw new UnauthorizedException('You don’t have permission to view suppliers');
+    }
+
+    const { filter, page, limit } = query;
     const filterOptions: RootFilterQuery<Supplier> = {};
     let sort = {};
 
@@ -107,15 +188,12 @@ export class SuppliersService extends BaseCrudService<Supplier> {
       if (name) {
         filterOptions.name = { $regex: name as string, $options: 'i' };
       }
-
       if (email) {
         filterOptions.email = { $regex: email as string, $options: 'i' };
       }
-
       if (phone) {
         filterOptions.phone = { $regex: phone as string, $options: 'i' };
       }
-
       if (address) {
         filterOptions.address = { $regex: address as string, $options: 'i' };
       }

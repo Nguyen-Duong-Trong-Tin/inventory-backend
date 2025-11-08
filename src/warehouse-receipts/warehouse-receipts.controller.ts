@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 
@@ -27,8 +28,10 @@ export class WarehouseReceiptsController {
 
   @Post('/')
   @UseGuards(JwtAuthGuard)
-  async createWarehouseReceipt(@Body() body: CreateWarehouseReceiptBodyDto) {
-    return this.warehouseReceiptsService.createWarehouseReceipt({ body });
+  async createWarehouseReceipt(
+    @Body() body: CreateWarehouseReceiptBodyDto,
+    @Request() { user }: { user: { userId: string; email: string } },) {
+    return this.warehouseReceiptsService.createWarehouseReceipt({ body, employee: user  });
   }
 
   @Patch('/:id')
@@ -36,20 +39,25 @@ export class WarehouseReceiptsController {
   async updateWarehouseReceipt(
     @Param('id') id: string,
     @Body() body: UpdateWarehouseReceiptBodyDto,
+    @Request() { user }: { user: { userId: string; email: string } },
   ) {
-    return this.warehouseReceiptsService.updateWarehouseReceipt({ id, body });
+    return this.warehouseReceiptsService.updateWarehouseReceipt({ id, body, employee: user  });
   }
 
   @Delete('/:id')
   @UseGuards(JwtAuthGuard)
-  async deleteWarehouseReceipt(@Param('id') id: string) {
-    return this.warehouseReceiptsService.deleteWarehouseReceipt({ id });
+  async deleteWarehouseReceipt(
+    @Param('id') id: string,
+    @Request() { user }: { user: { userId: string; email: string } },) {
+    return this.warehouseReceiptsService.deleteWarehouseReceipt({ id, employee: user  });
   }
 
   @Get('/')
   @UseGuards(JwtAuthGuard)
-  async findWarehouseReceipts(@Query() query: FindWarehousesReceiptsQueryDto) {
-    return this.warehouseReceiptsService.findWarehouseReceipts({ query });
+  async findWarehouseReceipts(
+    @Query() query: FindWarehousesReceiptsQueryDto,
+    @Request() { user }: { user: { userId: string; email: string } },) {
+    return this.warehouseReceiptsService.findWarehouseReceipts({ query, employee: user  });
   }
 
   @Get('/:id')

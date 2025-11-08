@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, RootFilterQuery } from 'mongoose';
 import { BaseCrudService } from 'src/cores/base-crud.core';
@@ -8,42 +8,131 @@ import { UpdateRoleBodyDto } from './dto/update-role.dto';
 import { FindRolesQueryDto } from './dto/find-roles.dto';
 import sortHelper from 'src/helpers/sort.helper';
 import paginationHelper from 'src/helpers/pagination.helper';
+import { EmployeesService } from 'src/employees/employees.service';
 
 @Injectable()
-export class RolesService extends BaseCrudService<Role> {
+export class RolesService extends BaseCrudService<Role>  {
   constructor(
-    @InjectModel(Role.name)
-    private roleModel: Model<Role>,
+    @InjectModel(Role.name) private roleModel: Model<Role>,
+    @Inject(forwardRef(() => EmployeesService))
+    private readonly employeesService: EmployeesService,
   ) {
     super(roleModel);
   }
 
   // POST /roles
-  async createRole({ body }: { body: CreateRoleBodyDto }) {
-    const { name, description, permisstion } = body;
+  async createRole({
+    body,
+    employee,
+  }: {
+    body: CreateRoleBodyDto;
+    employee: { userId: string; email: string };
+  }) {
+    const { userId } = employee;
 
+    // Exist employee
+    const employeeExists = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
+    if (!employeeExists) {
+      throw new UnauthorizedException('Employee id not found');
+    }
+
+    // Role employee
+    const roleExists = await this.findOne({
+      filter: { _id: employeeExists.roleId },
+    });
+    if (!roleExists) {
+      throw new UnauthorizedException('Role id not found');
+    }
+
+    // "create-role"
+    const { permisstion } = roleExists;
+    if (!permisstion?.includes('create-role')) {
+      throw new UnauthorizedException('You don’t have permission to create roles');
+    }
+
+    // New role
+    const { name, description, permisstion: newPermissions } = body;
     return await this.create({
-      doc: { name, description, permisstion },
+      doc: { name, description, permisstion: newPermissions },
     });
   }
 
   // PATCH /roles/:id
-  async updateRole({ id, body }: { id: string; body: UpdateRoleBodyDto }) {
-    const { name, description, permisstion } = body;
+  async updateRole({
+    id,
+    body,
+    employee,
+  }: {
+    id: string;
+    body: UpdateRoleBodyDto;
+    employee: { userId: string; email: string };
+  }) {
+    const { userId } = employee;
 
-    const newRole = await this.findOneAndUpdate({
-      filter: { _id: id },
-      update: { name, description, permisstion },
+    const employeeExists = await this.employeesService.findOne({
+      filter: { _id: userId },
     });
-    if (!newRole) {
+    if (!employeeExists) {
+      throw new UnauthorizedException('Employee id not found');
+    }
+
+    const roleExists = await this.findOne({
+      filter: { _id: employeeExists.roleId },
+    });
+    if (!roleExists) {
+      throw new UnauthorizedException('Role id not found');
+    }
+
+    const { permisstion } = roleExists;
+    if (!permisstion?.includes('update-role')) {
+      throw new UnauthorizedException('You don’t have permission to update roles');
+    }
+
+    const { name, description, permisstion: newPermissions } = body;
+
+    const updatedRole = await this.findOneAndUpdate({
+      filter: { _id: id },
+      update: { name, description, permisstion: newPermissions },
+    });
+
+    if (!updatedRole) {
       throw new NotFoundException('Role id not found');
     }
 
-    return newRole;
+    return updatedRole;
   }
 
   // DELETE /roles/:id
-  async deleteRole({ id }: { id: string }) {
+  async deleteRole({
+    id,
+    employee,
+  }: {
+    id: string;
+    employee: { userId: string; email: string };
+  }) {
+    const { userId } = employee;
+
+    const employeeExists = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
+    if (!employeeExists) {
+      throw new UnauthorizedException('Employee id not found');
+    }
+
+    const roleExists = await this.findOne({
+      filter: { _id: employeeExists.roleId },
+    });
+    if (!roleExists) {
+      throw new UnauthorizedException('Role id not found');
+    }
+
+    const { permisstion } = roleExists;
+    if (!permisstion?.includes('delete-role')) {
+      throw new UnauthorizedException('You don’t have permission to delete roles');
+    }
+
     const deletedRole = await this.findOneAndDelete({
       filter: { _id: id } as RootFilterQuery<Role>,
     });
@@ -55,10 +144,36 @@ export class RolesService extends BaseCrudService<Role> {
     return deletedRole;
   }
 
-  // GET /roles
-  async findRoles({ query }: { query: FindRolesQueryDto }) {
-    const { filter, page, limit } = query;
+ // GET /roles
+  async findRoles({
+    query,
+    employee,
+  }: {
+    query: FindRolesQueryDto;
+    employee: { userId: string; email: string };
+  }) {
+    const { userId } = employee;
 
+    const employeeExists = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
+    if (!employeeExists) {
+      throw new UnauthorizedException('Employee id not found');
+    }
+
+    const roleExists = await this.findOne({
+      filter: { _id: employeeExists.roleId },
+    });
+    if (!roleExists) {
+      throw new UnauthorizedException('Role id not found');
+    }
+
+    const { permisstion } = roleExists;
+    if (!permisstion?.includes('read-role')) {
+      throw new UnauthorizedException('You don’t have permission to view roles');
+    }
+
+    const { filter, page, limit } = query;
     const filterOptions: RootFilterQuery<Role> = {};
     let sort = {};
 

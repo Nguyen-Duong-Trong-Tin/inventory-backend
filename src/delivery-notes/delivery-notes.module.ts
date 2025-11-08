@@ -7,6 +7,7 @@ import { DeliveryNote, DeliveryNoteSchema } from './schema/deliverynote.schema';
 import { WarehousesModule } from 'src/warehouses/warehouses.module';
 import { EmployeesModule } from 'src/employees/employees.module';
 import { CustomersModule } from 'src/customers/customers.module';
+import { RolesModule } from 'src/roles/roles.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { CustomersModule } from 'src/customers/customers.module';
     WarehousesModule,
     EmployeesModule,
     CustomersModule,
+    RolesModule,
   ],
   controllers: [DeliveryNotesController],
   providers: [DeliveryNotesService],
