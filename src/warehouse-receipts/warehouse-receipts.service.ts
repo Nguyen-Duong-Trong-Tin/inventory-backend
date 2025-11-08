@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { BaseCrudService } from 'src/cores/base-crud.core';
 import { WarehouseReceipt } from './schema/warehousereceipts.schema';
 import { InjectModel } from '@nestjs/mongoose';
@@ -24,32 +28,32 @@ export class WarehouseReceiptsService extends BaseCrudService<WarehouseReceipt> 
 
   // POST /warehouse-receipts
   async createWarehouseReceipt({
-      body,
-      employee,
-    }: {
-      body: CreateWarehouseReceiptBodyDto;
-      employee: { userId: string; email: string };
-    }) {
-      const { userId } = employee;
-      const { date, receiptNo, supplierId, warehouseId, employeeId } = body;
+    body,
+    employee,
+  }: {
+    body: CreateWarehouseReceiptBodyDto;
+    employee: { userId: string; email: string };
+  }) {
+    const { userId } = employee;
+    const { date, receiptNo, supplierId, warehouseId, employeeId } = body;
 
-      const actor = await this.employeesService.findOne({ filter: { _id: userId } });
-      if (!actor) throw new UnauthorizedException('Employee id not found');
+    const actor = await this.employeesService.findOne({ filter: { _id: userId } });
+    if (!actor) throw new UnauthorizedException('Employee id not found');
 
-      const role = await this.roleService.findOne({ filter: { _id: actor.roleId } });
-      if (!role) throw new UnauthorizedException('Role id not found');
+    const role = await this.roleService.findOne({ filter: { _id: actor.roleId } });
+    if (!role) throw new UnauthorizedException('Role id not found');
 
-      if (!role.permisstion?.includes('create-warehouse-receipt')) {
-        throw new UnauthorizedException('You don’t have permission to create warehouse receipts');
-      }
-
-      return this.create({
-        doc: { date, receiptNo, supplierId, warehouseId, employeeId },
-      });
+    if (!role.permisstion?.includes('create-warehouse-receipt')) {
+      throw new UnauthorizedException('You don’t have permission to create warehouse receipts');
     }
 
+    return this.create({
+      doc: { date, receiptNo, supplierId, warehouseId, employeeId },
+    });
+  }
+
   // PATCH /warehouse-receipts/:id
- async updateWarehouseReceipt({
+  async updateWarehouseReceipt({
     id,
     body,
     employee,
@@ -59,7 +63,7 @@ export class WarehouseReceiptsService extends BaseCrudService<WarehouseReceipt> 
     employee: { userId: string; email: string };
   }) {
     const { userId } = employee;
-    const { date, receiptNo, supplierTypeId, warehouseId, employeeId } = body;
+    const { date, receiptNo, supplierId, warehouseId, employeeId } = body;
 
     const actor = await this.employeesService.findOne({ filter: { _id: userId } });
     if (!actor) throw new UnauthorizedException('Employee id not found');
@@ -73,7 +77,7 @@ export class WarehouseReceiptsService extends BaseCrudService<WarehouseReceipt> 
 
     const newWarehouseReceipt = await this.findOneAndUpdate({
       filter: { _id: id },
-      update: { date, receiptNo, supplierTypeId, warehouseId, employeeId },
+      update: { date, receiptNo, supplierId, warehouseId, employeeId },
     });
 
     if (!newWarehouseReceipt) {
@@ -83,7 +87,7 @@ export class WarehouseReceiptsService extends BaseCrudService<WarehouseReceipt> 
     return newWarehouseReceipt;
   }
 
-  //DELETE /warehouse-receipts/:id
+  // DELETE /warehouse-receipts/:id
   async deleteWarehouseReceipt({
     id,
     employee,
@@ -142,7 +146,7 @@ export class WarehouseReceiptsService extends BaseCrudService<WarehouseReceipt> 
       const {
         date,
         receiptNo,
-        supplierTypeId,
+        supplierId,
         warehouseId,
         employeeId,
         sortBy,
@@ -150,15 +154,15 @@ export class WarehouseReceiptsService extends BaseCrudService<WarehouseReceipt> 
       } = filter;
 
       if (date) {
-        filterOptions.date = { $regex: date, $options: 'i' };
+        filterOptions.date = new Date(date); // ✅ dùng đúng kiểu Date
       }
 
       if (receiptNo) {
         filterOptions.receiptNo = { $regex: receiptNo, $options: 'i' };
       }
 
-      if (supplierTypeId) {
-        filterOptions.supplierTypeId = { $regex: supplierTypeId, $options: 'i' };
+      if (supplierId) {
+        filterOptions.supplierId = { $regex: supplierId, $options: 'i' };
       }
 
       if (warehouseId) {
@@ -185,7 +189,7 @@ export class WarehouseReceiptsService extends BaseCrudService<WarehouseReceipt> 
     ]);
 
     return {
-      wareshouseReceipts: {
+      warehouseReceipts: {
         total,
         page: pagination.page,
         limit: pagination.limit,
@@ -203,6 +207,7 @@ export class WarehouseReceiptsService extends BaseCrudService<WarehouseReceipt> 
     if (!warehouseReceiptExists) {
       throw new NotFoundException('Warehouse Receipt id not found');
     }
+
     return warehouseReceiptExists;
   }
 }

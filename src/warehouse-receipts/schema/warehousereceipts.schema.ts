@@ -20,7 +20,7 @@ export class WarehouseReceipt {
   @Prop({ type: String, required: true })
   warehouseId: string;
 
-  @Prop({ type: Number, required: true })
+  @Prop({ type: String, required: true })
   employeeId: string;
 }
 
