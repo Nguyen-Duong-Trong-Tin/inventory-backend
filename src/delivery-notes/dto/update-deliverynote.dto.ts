@@ -1,23 +1,25 @@
-import { IsOptional, IsString, IsNumber } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsOptional, IsString, IsDate } from 'class-validator';
 
 export class UpdateDeliveryNoteBodyDto {
   @IsString()
   @IsOptional()
   deliveryNo?: string;
 
-  @IsString()
+  @IsDate()
   @IsOptional()
+  @Type(() => Date)
   date?: Date;
 
-  @IsNumber()
+  @IsString()
   @IsOptional()
-  warehouseId: string;
+  warehouseId?: string;
 
   @IsString()
   @IsOptional()
-  employeeId: string;
+  employeeId?: string;
 
   @IsString()
   @IsOptional()
-  customerId: string;
+  customerId?: string;
 }
