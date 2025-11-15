@@ -1,23 +1,26 @@
+import { Type } from 'class-transformer';
 import {
   IsDate,
-  IsDateString,
+  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
 
 export class UpdateLotBodyDto {
-  @IsNumber()
+  @IsString()
   @IsOptional()
-  lotNumber?: number;
+  lotNumber?: string;
 
-  @IsDateString()
+  @IsDate()
   @IsOptional()
-  manufactureDate?: string;
+  @Type(() => Date)
+  manufactureDate?: Date;
 
-  @IsDateString()
+  @IsDate()
   @IsOptional()
-  expiryDate?: string;
+  @Type(() => Date)
+  expiryDate?: Date;
 
   @IsString()
   @IsOptional()
@@ -26,4 +29,12 @@ export class UpdateLotBodyDto {
   @IsString()
   @IsOptional()
   warehouseReceiptId?: string;
+
+  @IsNumber()
+  @IsOptional()
+  quantity?: number;
+
+  @IsNumber()
+  @IsOptional()
+  importPrice?: number;
 }
