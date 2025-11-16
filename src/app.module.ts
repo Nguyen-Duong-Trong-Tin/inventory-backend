@@ -14,6 +14,7 @@ import { DeliveryNotesModule } from './delivery-notes/delivery-notes.module';
 import { WarehouseReceiptsModule } from './warehouse-receipts/warehouse-receipts.module';
 import { AuthModule } from './auth/auth.module';
 import { LotsModule } from './lots/lots.module';
+import { DeliveryNoteDetailsModule } from './delivery-note-details/delivery-note-details.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { LotsModule } from './lots/lots.module';
     WarehousesModule,
     EmployeesModule,
     DeliveryNotesModule,
+    DeliveryNoteDetailsModule,
     WarehouseReceiptsModule,
     LotsModule,
     AuthModule,
