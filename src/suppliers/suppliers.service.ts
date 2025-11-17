@@ -36,7 +36,6 @@ export class SuppliersService extends BaseCrudService<Supplier> {
     body: CreateSupplierBodyDto;
     employee: { userId: string; email: string };
   }) {
-  
     const { userId } = employee;
 
     const employeeExists = await this.employeesService.findOne({
@@ -175,7 +174,9 @@ export class SuppliersService extends BaseCrudService<Supplier> {
 
     const { permisstion } = roleExists;
     if (!permisstion?.includes('read-supplier')) {
-      throw new UnauthorizedException('You don’t have permission to view suppliers');
+      throw new UnauthorizedException(
+        'You don’t have permission to view suppliers',
+      );
     }
 
     const { filter, page, limit } = query;

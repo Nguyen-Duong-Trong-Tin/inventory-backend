@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, RootFilterQuery } from 'mongoose';
 
@@ -33,14 +37,20 @@ export class CustomersService extends BaseCrudService<Customer> {
   }) {
     const { userId } = employee;
 
-    const actor = await this.employeesService.findOne({ filter: { _id: userId } });
+    const actor = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
     if (!actor) throw new UnauthorizedException('Employee id not found');
 
-    const role = await this.rolesService.findOne({ filter: { _id: actor.roleId } });
+    const role = await this.rolesService.findOne({
+      filter: { _id: actor.roleId },
+    });
     if (!role) throw new UnauthorizedException('Role id not found');
 
     if (!role.permisstion?.includes('create-customer')) {
-      throw new UnauthorizedException('You don’t have permission to create customers');
+      throw new UnauthorizedException(
+        'You don’t have permission to create customers',
+      );
     }
 
     const { name, phone } = body;
@@ -59,14 +69,20 @@ export class CustomersService extends BaseCrudService<Customer> {
   }) {
     const { userId } = employee;
 
-    const actor = await this.employeesService.findOne({ filter: { _id: userId } });
+    const actor = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
     if (!actor) throw new UnauthorizedException('Employee id not found');
 
-    const role = await this.rolesService.findOne({ filter: { _id: actor.roleId } });
+    const role = await this.rolesService.findOne({
+      filter: { _id: actor.roleId },
+    });
     if (!role) throw new UnauthorizedException('Role id not found');
 
     if (!role.permisstion?.includes('update-customer')) {
-      throw new UnauthorizedException('You don’t have permission to update customers');
+      throw new UnauthorizedException(
+        'You don’t have permission to update customers',
+      );
     }
 
     const { name, phone } = body;
@@ -93,14 +109,20 @@ export class CustomersService extends BaseCrudService<Customer> {
   }) {
     const { userId } = employee;
 
-    const actor = await this.employeesService.findOne({ filter: { _id: userId } });
+    const actor = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
     if (!actor) throw new UnauthorizedException('Employee id not found');
 
-    const role = await this.rolesService.findOne({ filter: { _id: actor.roleId } });
+    const role = await this.rolesService.findOne({
+      filter: { _id: actor.roleId },
+    });
     if (!role) throw new UnauthorizedException('Role id not found');
 
     if (!role.permisstion?.includes('delete-customer')) {
-      throw new UnauthorizedException('You don’t have permission to delete customers');
+      throw new UnauthorizedException(
+        'You don’t have permission to delete customers',
+      );
     }
 
     const deletedCustomer = await this.findOneAndDelete({
@@ -124,14 +146,20 @@ export class CustomersService extends BaseCrudService<Customer> {
   }) {
     const { userId } = employee;
 
-    const actor = await this.employeesService.findOne({ filter: { _id: userId } });
+    const actor = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
     if (!actor) throw new UnauthorizedException('Employee id not found');
 
-    const role = await this.rolesService.findOne({ filter: { _id: actor.roleId } });
+    const role = await this.rolesService.findOne({
+      filter: { _id: actor.roleId },
+    });
     if (!role) throw new UnauthorizedException('Role id not found');
 
     if (!role.permisstion?.includes('read-customer')) {
-      throw new UnauthorizedException('You don’t have permission to view customers');
+      throw new UnauthorizedException(
+        'You don’t have permission to view customers',
+      );
     }
 
     const { filter, page, limit } = query;

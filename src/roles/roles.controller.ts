@@ -27,16 +27,18 @@ export class RolesController {
   @UseGuards(JwtAuthGuard)
   async createRole(
     @Body() body: CreateRoleBodyDto,
-    @Request() { user }: { user: { userId: string; email: string } },) {
-    return this.rolesService.createRole({ body, employee: user  });
+    @Request() { user }: { user: { userId: string; email: string } },
+  ) {
+    return this.rolesService.createRole({ body, employee: user });
   }
 
   @Patch('/:id')
   @UseGuards(JwtAuthGuard)
   async updateRole(
-    @Param('id') id: string, 
-    @Body() body: UpdateRoleBodyDto, 
-    @Request() { user }: { user: { userId: string; email: string } },) {
+    @Param('id') id: string,
+    @Body() body: UpdateRoleBodyDto,
+    @Request() { user }: { user: { userId: string; email: string } },
+  ) {
     return this.rolesService.updateRole({ id, body, employee: user });
   }
 
@@ -44,7 +46,8 @@ export class RolesController {
   @UseGuards(JwtAuthGuard)
   async deleteRole(
     @Param('id') id: string,
-    @Request() { user }: { user: { userId: string; email: string } },) {
+    @Request() { user }: { user: { userId: string; email: string } },
+  ) {
     return this.rolesService.deleteRole({ id, employee: user });
   }
 

@@ -50,14 +50,20 @@ export class LotsService extends BaseCrudService<Lot> {
       importPrice,
     } = body;
 
-    const actor = await this.employeesService.findOne({ filter: { _id: userId } });
+    const actor = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
     if (!actor) throw new UnauthorizedException('Employee id not found');
 
-    const role = await this.roleService.findOne({ filter: { _id: actor.roleId } });
+    const role = await this.roleService.findOne({
+      filter: { _id: actor.roleId },
+    });
     if (!role) throw new UnauthorizedException('Role id not found');
 
     if (!role.permisstion?.includes('create-lot')) {
-      throw new UnauthorizedException('You don’t have permission to create lots');
+      throw new UnauthorizedException(
+        'You don’t have permission to create lots',
+      );
     }
 
     const productsExists = await this.productsService.findOne({
@@ -65,13 +71,18 @@ export class LotsService extends BaseCrudService<Lot> {
     });
     if (!productsExists) throw new NotFoundException('Product id not found');
 
-    const warehouseReceiptsExists = await this.warehouseReceiptsService.findOne({
-      filter: { _id: warehouseReceiptId },
-    });
-    if (!warehouseReceiptsExists) throw new NotFoundException('WarehouseReceipt id not found');
+    const warehouseReceiptsExists = await this.warehouseReceiptsService.findOne(
+      {
+        filter: { _id: warehouseReceiptId },
+      },
+    );
+    if (!warehouseReceiptsExists)
+      throw new NotFoundException('WarehouseReceipt id not found');
 
     if (new Date(expiryDate) <= new Date(manufactureDate)) {
-      throw new BadRequestException('Expiry date must be after manufacture date');
+      throw new BadRequestException(
+        'Expiry date must be after manufacture date',
+      );
     }
 
     return this.create({
@@ -108,14 +119,20 @@ export class LotsService extends BaseCrudService<Lot> {
       importPrice,
     } = body;
 
-    const actor = await this.employeesService.findOne({ filter: { _id: userId } });
+    const actor = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
     if (!actor) throw new UnauthorizedException('Employee id not found');
 
-    const role = await this.roleService.findOne({ filter: { _id: actor.roleId } });
+    const role = await this.roleService.findOne({
+      filter: { _id: actor.roleId },
+    });
     if (!role) throw new UnauthorizedException('Role id not found');
 
     if (!role.permisstion?.includes('update-lot')) {
-      throw new UnauthorizedException('You don’t have permission to update lots');
+      throw new UnauthorizedException(
+        'You don’t have permission to update lots',
+      );
     }
 
     const productsExists = await this.productsService.findOne({
@@ -123,14 +140,19 @@ export class LotsService extends BaseCrudService<Lot> {
     });
     if (!productsExists) throw new NotFoundException('Product id not found');
 
-    const warehouseReceiptsExists = await this.warehouseReceiptsService.findOne({
-      filter: { _id: warehouseReceiptId },
-    });
-    if (!warehouseReceiptsExists) throw new NotFoundException('WarehouseReceipt id not found');
+    const warehouseReceiptsExists = await this.warehouseReceiptsService.findOne(
+      {
+        filter: { _id: warehouseReceiptId },
+      },
+    );
+    if (!warehouseReceiptsExists)
+      throw new NotFoundException('WarehouseReceipt id not found');
 
     if (manufactureDate && expiryDate) {
       if (new Date(expiryDate) <= new Date(manufactureDate)) {
-        throw new BadRequestException('Expiry date must be after manufacture date');
+        throw new BadRequestException(
+          'Expiry date must be after manufacture date',
+        );
       }
     }
 
@@ -164,14 +186,20 @@ export class LotsService extends BaseCrudService<Lot> {
   }) {
     const { userId } = employee;
 
-    const actor = await this.employeesService.findOne({ filter: { _id: userId } });
+    const actor = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
     if (!actor) throw new UnauthorizedException('Employee id not found');
 
-    const role = await this.roleService.findOne({ filter: { _id: actor.roleId } });
+    const role = await this.roleService.findOne({
+      filter: { _id: actor.roleId },
+    });
     if (!role) throw new UnauthorizedException('Role id not found');
 
     if (!role.permisstion?.includes('delete-lot')) {
-      throw new UnauthorizedException('You don’t have permission to delete lots');
+      throw new UnauthorizedException(
+        'You don’t have permission to delete lots',
+      );
     }
 
     const deletedLot = await this.findOneAndDelete({
@@ -195,10 +223,14 @@ export class LotsService extends BaseCrudService<Lot> {
   }) {
     const { userId } = employee;
 
-    const actor = await this.employeesService.findOne({ filter: { _id: userId } });
+    const actor = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
     if (!actor) throw new UnauthorizedException('Employee id not found');
 
-    const role = await this.roleService.findOne({ filter: { _id: actor.roleId } });
+    const role = await this.roleService.findOne({
+      filter: { _id: actor.roleId },
+    });
     if (!role) throw new UnauthorizedException('Role id not found');
 
     if (!role.permisstion?.includes('read-lot')) {
@@ -239,7 +271,10 @@ export class LotsService extends BaseCrudService<Lot> {
       }
 
       if (warehouseReceiptId) {
-        filterOptions.warehouseReceiptId = { $regex: warehouseReceiptId, $options: 'i' };
+        filterOptions.warehouseReceiptId = {
+          $regex: warehouseReceiptId,
+          $options: 'i',
+        };
       }
 
       if (quantity !== undefined) {

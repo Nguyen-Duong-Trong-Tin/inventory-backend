@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { BaseCrudService } from 'src/cores/base-crud.core';
 import { Product } from './schema/product.schema';
 import { InjectModel } from '@nestjs/mongoose';
@@ -35,20 +39,27 @@ export class ProductsService extends BaseCrudService<Product> {
     const { userId } = employee;
     const { name, status, unit, productTypeId } = body;
 
-    const actor = await this.employeesService.findOne({ filter: { _id: userId } });
+    const actor = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
     if (!actor) throw new UnauthorizedException('Employee id not found');
 
-    const role = await this.roleService.findOne({ filter: { _id: actor.roleId } });
+    const role = await this.roleService.findOne({
+      filter: { _id: actor.roleId },
+    });
     if (!role) throw new UnauthorizedException('Role id not found');
 
     if (!role.permisstion?.includes('create-product')) {
-      throw new UnauthorizedException('You don’t have permission to create products');
+      throw new UnauthorizedException(
+        'You don’t have permission to create products',
+      );
     }
 
     const productTypeExists = await this.productTypesService.findOne({
       filter: { _id: productTypeId },
     });
-    if (!productTypeExists) throw new NotFoundException('Product type id not found');
+    if (!productTypeExists)
+      throw new NotFoundException('Product type id not found');
 
     return this.create({
       doc: { name, status, unit, productTypeId },
@@ -68,14 +79,20 @@ export class ProductsService extends BaseCrudService<Product> {
     const { userId } = employee;
     const { name, status, unit, productTypeId } = body;
 
-    const actor = await this.employeesService.findOne({ filter: { _id: userId } });
+    const actor = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
     if (!actor) throw new UnauthorizedException('Employee id not found');
 
-    const role = await this.roleService.findOne({ filter: { _id: actor.roleId } });
+    const role = await this.roleService.findOne({
+      filter: { _id: actor.roleId },
+    });
     if (!role) throw new UnauthorizedException('Role id not found');
 
     if (!role.permisstion?.includes('update-product')) {
-      throw new UnauthorizedException('You don’t have permission to update products');
+      throw new UnauthorizedException(
+        'You don’t have permission to update products',
+      );
     }
 
     const newProduct = await this.findOneAndUpdate({
@@ -100,14 +117,20 @@ export class ProductsService extends BaseCrudService<Product> {
   }) {
     const { userId } = employee;
 
-    const actor = await this.employeesService.findOne({ filter: { _id: userId } });
+    const actor = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
     if (!actor) throw new UnauthorizedException('Employee id not found');
 
-    const role = await this.roleService.findOne({ filter: { _id: actor.roleId } });
+    const role = await this.roleService.findOne({
+      filter: { _id: actor.roleId },
+    });
     if (!role) throw new UnauthorizedException('Role id not found');
 
     if (!role.permisstion?.includes('delete-product')) {
-      throw new UnauthorizedException('You don’t have permission to delete products');
+      throw new UnauthorizedException(
+        'You don’t have permission to delete products',
+      );
     }
 
     const deletedproduct = await this.findOneAndDelete({
@@ -131,14 +154,20 @@ export class ProductsService extends BaseCrudService<Product> {
   }) {
     const { userId } = employee;
 
-    const actor = await this.employeesService.findOne({ filter: { _id: userId } });
+    const actor = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
     if (!actor) throw new UnauthorizedException('Employee id not found');
 
-    const role = await this.roleService.findOne({ filter: { _id: actor.roleId } });
+    const role = await this.roleService.findOne({
+      filter: { _id: actor.roleId },
+    });
     if (!role) throw new UnauthorizedException('Role id not found');
 
     if (!role.permisstion?.includes('read-product')) {
-      throw new UnauthorizedException('You don’t have permission to view products');
+      throw new UnauthorizedException(
+        'You don’t have permission to view products',
+      );
     }
 
     const { filter, page, limit } = query;

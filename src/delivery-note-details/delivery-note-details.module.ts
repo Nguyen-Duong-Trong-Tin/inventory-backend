@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
-
-import { DeliveryNoteDetail, DeliveryNoteDetailSchema } from './schema/deliverynotedetail.schema';
+import {
+  DeliveryNoteDetail,
+  DeliveryNoteDetailSchema,
+} from './schema/deliverynotedetail.schema';
 
 import { LotsModule } from 'src/lots/lots.module';
 import { DeliveryNotesModule } from 'src/delivery-notes/delivery-notes.module';

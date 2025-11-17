@@ -31,7 +31,8 @@ export class SuppliersController {
     @Request() { user }: { user: { userId: string; email: string } },
   ) {
     return this.suppliersService.createSupplier({
-      body, employee: user 
+      body,
+      employee: user,
     });
   }
 
@@ -54,7 +55,7 @@ export class SuppliersController {
     return this.suppliersService.deleteSupplier({ id, employee: user });
   }
 
- @Get('/')
+  @Get('/')
   @UseGuards(JwtAuthGuard)
   async findSuppliers(
     @Query() query: FindSuppliersQueryDto,
