@@ -24,4 +24,5 @@ export class DeliveryNoteDetail {
   lineNo: number;
 }
 
-export const DeliveryNoteDetailSchema = SchemaFactory.createForClass(DeliveryNoteDetail);
+export const DeliveryNoteDetailSchema =
+  SchemaFactory.createForClass(DeliveryNoteDetail);

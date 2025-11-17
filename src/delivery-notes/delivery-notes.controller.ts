@@ -28,8 +28,12 @@ export class DeliveryNotesController {
   @UseGuards(JwtAuthGuard)
   async createDeliveryNote(
     @Body() body: CreateDeliveryNoteBodyDto,
-    @Request() { user }: { user: { userId: string; email: string } },) {
-    return this.deliveryNotesService.createDeliveryNote({ body, employee: user  });
+    @Request() { user }: { user: { userId: string; email: string } },
+  ) {
+    return this.deliveryNotesService.createDeliveryNote({
+      body,
+      employee: user,
+    });
   }
 
   @Patch('/:id')
@@ -39,23 +43,32 @@ export class DeliveryNotesController {
     @Body() body: UpdateDeliveryNoteBodyDto,
     @Request() { user }: { user: { userId: string; email: string } },
   ) {
-    return this.deliveryNotesService.updateDeliveryNote({ id, body, employee: user  });
+    return this.deliveryNotesService.updateDeliveryNote({
+      id,
+      body,
+      employee: user,
+    });
   }
 
   @Delete('/:id')
   @UseGuards(JwtAuthGuard)
   async deleteDeliveryNote(
     @Param('id') id: string,
-    @Request() { user }: { user: { userId: string; email: string } },) {
-    return this.deliveryNotesService.deletedeliverynote({ id, employee: user  });
+    @Request() { user }: { user: { userId: string; email: string } },
+  ) {
+    return this.deliveryNotesService.deletedeliverynote({ id, employee: user });
   }
 
   @Get('/')
   @UseGuards(JwtAuthGuard)
   async findDeliveryNotes(
     @Query() query: FindDeliveryNotesQueryDto,
-    @Request() { user }: { user: { userId: string; email: string } },) {
-    return this.deliveryNotesService.findDeliveryNotes({ query, employee: user  });
+    @Request() { user }: { user: { userId: string; email: string } },
+  ) {
+    return this.deliveryNotesService.findDeliveryNotes({
+      query,
+      employee: user,
+    });
   }
 
   @Get('/:id')

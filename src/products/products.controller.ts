@@ -28,8 +28,9 @@ export class ProductsController {
   @UseGuards(JwtAuthGuard)
   async createProduct(
     @Body() body: CreateProductBodyDto,
-    @Request() { user }: { user: { userId: string; email: string } },) {
-    return this.productsService.createProduct({ body, employee: user  });
+    @Request() { user }: { user: { userId: string; email: string } },
+  ) {
+    return this.productsService.createProduct({ body, employee: user });
   }
 
   @Patch('/:id')
@@ -39,23 +40,25 @@ export class ProductsController {
     @Body() body: UpdateProductBodyDto,
     @Request() { user }: { user: { userId: string; email: string } },
   ) {
-    return this.productsService.updateProduct({ id, body, employee: user  });
+    return this.productsService.updateProduct({ id, body, employee: user });
   }
 
   @Delete('/:id')
   @UseGuards(JwtAuthGuard)
   async deleteProduct(
     @Param('id') id: string,
-    @Request() { user }: { user: { userId: string; email: string } },) {
-    return this.productsService.deleteproduct({ id, employee: user  });
+    @Request() { user }: { user: { userId: string; email: string } },
+  ) {
+    return this.productsService.deleteproduct({ id, employee: user });
   }
 
   @Get('/')
   @UseGuards(JwtAuthGuard)
   async findProducts(
     @Query() query: FindProductsQueryDto,
-    @Request() { user }: { user: { userId: string; email: string } },) {
-    return this.productsService.findProducts({ query, employee: user  });
+    @Request() { user }: { user: { userId: string; email: string } },
+  ) {
+    return this.productsService.findProducts({ query, employee: user });
   }
 
   @Get('/:id')

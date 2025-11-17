@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { BaseCrudService } from 'src/cores/base-crud.core';
 import { ProductTypes } from './schema/product-type.schema';
 import { InjectModel } from '@nestjs/mongoose';
@@ -33,14 +37,20 @@ export class ProductTypesService extends BaseCrudService<ProductTypes> {
     const { userId } = employee;
     const { name, description } = body;
 
-    const actor = await this.employeesService.findOne({ filter: { _id: userId } });
+    const actor = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
     if (!actor) throw new UnauthorizedException('Employee id not found');
 
-    const role = await this.roleService.findOne({ filter: { _id: actor.roleId } });
+    const role = await this.roleService.findOne({
+      filter: { _id: actor.roleId },
+    });
     if (!role) throw new UnauthorizedException('Role id not found');
 
     if (!role.permisstion?.includes('create-product-type')) {
-      throw new UnauthorizedException('You don’t have permission to create product types');
+      throw new UnauthorizedException(
+        'You don’t have permission to create product types',
+      );
     }
 
     return this.create({
@@ -61,14 +71,20 @@ export class ProductTypesService extends BaseCrudService<ProductTypes> {
     const { userId } = employee;
     const { name, description } = body;
 
-    const actor = await this.employeesService.findOne({ filter: { _id: userId } });
+    const actor = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
     if (!actor) throw new UnauthorizedException('Employee id not found');
 
-    const role = await this.roleService.findOne({ filter: { _id: actor.roleId } });
+    const role = await this.roleService.findOne({
+      filter: { _id: actor.roleId },
+    });
     if (!role) throw new UnauthorizedException('Role id not found');
 
     if (!role.permisstion?.includes('update-product-type')) {
-      throw new UnauthorizedException('You don’t have permission to update product types');
+      throw new UnauthorizedException(
+        'You don’t have permission to update product types',
+      );
     }
 
     const newProductTypes = await this.findOneAndUpdate({
@@ -93,14 +109,20 @@ export class ProductTypesService extends BaseCrudService<ProductTypes> {
   }) {
     const { userId } = employee;
 
-    const actor = await this.employeesService.findOne({ filter: { _id: userId } });
+    const actor = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
     if (!actor) throw new UnauthorizedException('Employee id not found');
 
-    const role = await this.roleService.findOne({ filter: { _id: actor.roleId } });
+    const role = await this.roleService.findOne({
+      filter: { _id: actor.roleId },
+    });
     if (!role) throw new UnauthorizedException('Role id not found');
 
     if (!role.permisstion?.includes('delete-product-type')) {
-      throw new UnauthorizedException('You don’t have permission to delete product types');
+      throw new UnauthorizedException(
+        'You don’t have permission to delete product types',
+      );
     }
 
     const deleteProductType = await this.findOneAndDelete({
@@ -124,14 +146,20 @@ export class ProductTypesService extends BaseCrudService<ProductTypes> {
   }) {
     const { userId } = employee;
 
-    const actor = await this.employeesService.findOne({ filter: { _id: userId } });
+    const actor = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
     if (!actor) throw new UnauthorizedException('Employee id not found');
 
-    const role = await this.roleService.findOne({ filter: { _id: actor.roleId } });
+    const role = await this.roleService.findOne({
+      filter: { _id: actor.roleId },
+    });
     if (!role) throw new UnauthorizedException('Role id not found');
 
     if (!role.permisstion?.includes('read-product-type')) {
-      throw new UnauthorizedException('You don’t have permission to view product types');
+      throw new UnauthorizedException(
+        'You don’t have permission to view product types',
+      );
     }
 
     const { filter, page, limit } = query;

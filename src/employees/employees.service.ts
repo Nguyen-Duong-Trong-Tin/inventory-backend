@@ -1,4 +1,10 @@
-import { forwardRef, Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, RootFilterQuery } from 'mongoose';
 import { BaseCrudService } from 'src/cores/base-crud.core';
@@ -14,7 +20,7 @@ import { FindEmployeesQueryDto } from './dto/find-employees.dto';
 @Injectable()
 export class EmployeesService extends BaseCrudService<Employee> {
   constructor(
-    @Inject(forwardRef(() => RolesService)) 
+    @Inject(forwardRef(() => RolesService))
     private readonly rolesService: RolesService,
 
     @InjectModel(Employee.name)
@@ -57,7 +63,9 @@ export class EmployeesService extends BaseCrudService<Employee> {
     }
 
     if (!creatorRole.permisstion?.includes('create-employee')) {
-      throw new UnauthorizedException('You don’t have permission to create employees');
+      throw new UnauthorizedException(
+        'You don’t have permission to create employees',
+      );
     }
 
     const roleExists = await this.rolesService.findOne({
@@ -67,7 +75,10 @@ export class EmployeesService extends BaseCrudService<Employee> {
       throw new NotFoundException('Role id not found');
     }
 
-    const hashedPassword = crypto.createHash('md5').update(password).digest('hex');
+    const hashedPassword = crypto
+      .createHash('md5')
+      .update(password)
+      .digest('hex');
 
     return await this.create({
       doc: { name, phone, email, address, password: hashedPassword, roleId },
@@ -96,7 +107,9 @@ export class EmployeesService extends BaseCrudService<Employee> {
       filter: { _id: actor.roleId },
     });
     if (!actorRole || !actorRole.permisstion?.includes('update-employee')) {
-      throw new UnauthorizedException('You don’t have permission to update employees');
+      throw new UnauthorizedException(
+        'You don’t have permission to update employees',
+      );
     }
 
     const roleExists = await this.rolesService.findOne({
@@ -109,7 +122,10 @@ export class EmployeesService extends BaseCrudService<Employee> {
     let updateData: any = { name, phone, email, address, roleId };
 
     if (password) {
-      updateData.password = crypto.createHash('md5').update(password).digest('hex');
+      updateData.password = crypto
+        .createHash('md5')
+        .update(password)
+        .digest('hex');
     }
 
     const updatedEmployee = await this.findOneAndUpdate({
@@ -143,7 +159,9 @@ export class EmployeesService extends BaseCrudService<Employee> {
       filter: { _id: actor.roleId },
     });
     if (!actorRole || !actorRole.permisstion?.includes('delete-employee')) {
-      throw new UnauthorizedException('You don’t have permission to delete employees');
+      throw new UnauthorizedException(
+        'You don’t have permission to delete employees',
+      );
     }
 
     const deletedEmployee = await this.findOneAndDelete({
@@ -176,7 +194,9 @@ export class EmployeesService extends BaseCrudService<Employee> {
       filter: { _id: actor.roleId },
     });
     if (!actorRole || !actorRole.permisstion?.includes('read-employee')) {
-      throw new UnauthorizedException('You don’t have permission to view employees');
+      throw new UnauthorizedException(
+        'You don’t have permission to view employees',
+      );
     }
 
     const { filter, page, limit } = query;

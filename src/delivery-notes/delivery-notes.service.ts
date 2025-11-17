@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { BaseCrudService } from 'src/cores/base-crud.core';
 import { DeliveryNote } from './schema/deliverynote.schema';
 import { InjectModel } from '@nestjs/mongoose';
@@ -37,14 +41,20 @@ export class DeliveryNotesService extends BaseCrudService<DeliveryNote> {
     const { userId } = employee;
     const { deliveryNo, date, warehouseId, employeeId, customerId } = body;
 
-    const actor = await this.employeeService.findOne({ filter: { _id: userId } });
+    const actor = await this.employeeService.findOne({
+      filter: { _id: userId },
+    });
     if (!actor) throw new UnauthorizedException('Employee id not found');
 
-    const role = await this.roleService.findOne({ filter: { _id: actor.roleId } });
+    const role = await this.roleService.findOne({
+      filter: { _id: actor.roleId },
+    });
     if (!role) throw new UnauthorizedException('Role id not found');
 
     if (!role.permisstion?.includes('create-delivery-note')) {
-      throw new UnauthorizedException('You don’t have permission to create delivery notes');
+      throw new UnauthorizedException(
+        'You don’t have permission to create delivery notes',
+      );
     }
 
     const warehouseExists = await this.warehouseService.findOne({
@@ -80,14 +90,20 @@ export class DeliveryNotesService extends BaseCrudService<DeliveryNote> {
     const { userId } = employee;
     const { deliveryNo, date, warehouseId, employeeId, customerId } = body;
 
-    const actor = await this.employeeService.findOne({ filter: { _id: userId } });
+    const actor = await this.employeeService.findOne({
+      filter: { _id: userId },
+    });
     if (!actor) throw new UnauthorizedException('Employee id not found');
 
-    const role = await this.roleService.findOne({ filter: { _id: actor.roleId } });
+    const role = await this.roleService.findOne({
+      filter: { _id: actor.roleId },
+    });
     if (!role) throw new UnauthorizedException('Role id not found');
 
     if (!role.permisstion?.includes('update-delivery-note')) {
-      throw new UnauthorizedException('You don’t have permission to update delivery notes');
+      throw new UnauthorizedException(
+        'You don’t have permission to update delivery notes',
+      );
     }
 
     const newDeliveryNote = await this.findOneAndUpdate({
@@ -100,7 +116,7 @@ export class DeliveryNotesService extends BaseCrudService<DeliveryNote> {
     }
 
     return newDeliveryNote;
-  } 
+  }
 
   // DELETE /deliverynote/:id
   async deletedeliverynote({
@@ -112,14 +128,20 @@ export class DeliveryNotesService extends BaseCrudService<DeliveryNote> {
   }) {
     const { userId } = employee;
 
-    const actor = await this.employeeService.findOne({ filter: { _id: userId } });
+    const actor = await this.employeeService.findOne({
+      filter: { _id: userId },
+    });
     if (!actor) throw new UnauthorizedException('Employee id not found');
 
-    const role = await this.roleService.findOne({ filter: { _id: actor.roleId } });
+    const role = await this.roleService.findOne({
+      filter: { _id: actor.roleId },
+    });
     if (!role) throw new UnauthorizedException('Role id not found');
 
     if (!role.permisstion?.includes('delete-delivery-note')) {
-      throw new UnauthorizedException('You don’t have permission to delete delivery notes');
+      throw new UnauthorizedException(
+        'You don’t have permission to delete delivery notes',
+      );
     }
 
     const deleted_deliverynote = await this.findOneAndDelete({
@@ -131,10 +153,10 @@ export class DeliveryNotesService extends BaseCrudService<DeliveryNote> {
     }
 
     return deleted_deliverynote;
-  }       
+  }
 
   // GET /deliverynotes
- async findDeliveryNotes({
+  async findDeliveryNotes({
     query,
     employee,
   }: {
@@ -143,14 +165,20 @@ export class DeliveryNotesService extends BaseCrudService<DeliveryNote> {
   }) {
     const { userId } = employee;
 
-    const actor = await this.employeeService.findOne({ filter: { _id: userId } });
+    const actor = await this.employeeService.findOne({
+      filter: { _id: userId },
+    });
     if (!actor) throw new UnauthorizedException('Employee id not found');
 
-    const role = await this.roleService.findOne({ filter: { _id: actor.roleId } });
+    const role = await this.roleService.findOne({
+      filter: { _id: actor.roleId },
+    });
     if (!role) throw new UnauthorizedException('Role id not found');
 
     if (!role.permisstion?.includes('read-delivery-note')) {
-      throw new UnauthorizedException('You don’t have permission to view delivery notes');
+      throw new UnauthorizedException(
+        'You don’t have permission to view delivery notes',
+      );
     }
 
     const { filter, page, limit } = query;

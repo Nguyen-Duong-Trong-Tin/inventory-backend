@@ -1,5 +1,9 @@
 import { Model, RootFilterQuery } from 'mongoose';
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
 import { BaseCrudService } from 'src/cores/base-crud.core';
@@ -35,14 +39,20 @@ export class WarehousesService extends BaseCrudService<Warehouse> {
     const { userId } = employee;
     const { name, address } = body;
 
-    const actor = await this.employeesService.findOne({ filter: { _id: userId } });
+    const actor = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
     if (!actor) throw new UnauthorizedException('Employee id not found');
 
-    const role = await this.roleService.findOne({ filter: { _id: actor.roleId } });
+    const role = await this.roleService.findOne({
+      filter: { _id: actor.roleId },
+    });
     if (!role) throw new UnauthorizedException('Role id not found');
 
     if (!role.permisstion?.includes('create-warehouse')) {
-      throw new UnauthorizedException('You don’t have permission to create warehouses');
+      throw new UnauthorizedException(
+        'You don’t have permission to create warehouses',
+      );
     }
 
     return this.create({
@@ -63,14 +73,20 @@ export class WarehousesService extends BaseCrudService<Warehouse> {
     const { userId } = employee;
     const { name, address } = body;
 
-    const actor = await this.employeesService.findOne({ filter: { _id: userId } });
+    const actor = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
     if (!actor) throw new UnauthorizedException('Employee id not found');
 
-    const role = await this.roleService.findOne({ filter: { _id: actor.roleId } });
+    const role = await this.roleService.findOne({
+      filter: { _id: actor.roleId },
+    });
     if (!role) throw new UnauthorizedException('Role id not found');
 
     if (!role.permisstion?.includes('update-warehouse')) {
-      throw new UnauthorizedException('You don’t have permission to update warehouses');
+      throw new UnauthorizedException(
+        'You don’t have permission to update warehouses',
+      );
     }
 
     const newWarehouse = await this.findOneAndUpdate({
@@ -95,14 +111,20 @@ export class WarehousesService extends BaseCrudService<Warehouse> {
   }) {
     const { userId } = employee;
 
-    const actor = await this.employeesService.findOne({ filter: { _id: userId } });
+    const actor = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
     if (!actor) throw new UnauthorizedException('Employee id not found');
 
-    const role = await this.roleService.findOne({ filter: { _id: actor.roleId } });
+    const role = await this.roleService.findOne({
+      filter: { _id: actor.roleId },
+    });
     if (!role) throw new UnauthorizedException('Role id not found');
 
     if (!role.permisstion?.includes('delete-warehouse')) {
-      throw new UnauthorizedException('You don’t have permission to delete warehouses');
+      throw new UnauthorizedException(
+        'You don’t have permission to delete warehouses',
+      );
     }
 
     const deletedWarehouse = await this.findOneAndDelete({
@@ -126,14 +148,20 @@ export class WarehousesService extends BaseCrudService<Warehouse> {
   }) {
     const { userId } = employee;
 
-    const actor = await this.employeesService.findOne({ filter: { _id: userId } });
+    const actor = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
     if (!actor) throw new UnauthorizedException('Employee id not found');
 
-    const role = await this.roleService.findOne({ filter: { _id: actor.roleId } });
+    const role = await this.roleService.findOne({
+      filter: { _id: actor.roleId },
+    });
     if (!role) throw new UnauthorizedException('Role id not found');
 
     if (!role.permisstion?.includes('read-warehouse')) {
-      throw new UnauthorizedException('You don’t have permission to view warehouses');
+      throw new UnauthorizedException(
+        'You don’t have permission to view warehouses',
+      );
     }
 
     const { filter, page, limit } = query;

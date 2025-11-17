@@ -8,6 +8,7 @@ import {
   Post,
   Query,
   Request,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 
@@ -16,6 +17,7 @@ import { CreateWarehouseReceiptBodyDto } from './dto/create-warehousereceipts.dt
 import { UpdateWarehouseReceiptBodyDto } from './dto/update-warehousereceipts.dto';
 import { FindWarehousesReceiptsQueryDto } from './dto/find-warehousereceipts.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { Response } from 'express';
 
 @Controller({
   path: 'warehouse-receipts',
@@ -30,8 +32,12 @@ export class WarehouseReceiptsController {
   @UseGuards(JwtAuthGuard)
   async createWarehouseReceipt(
     @Body() body: CreateWarehouseReceiptBodyDto,
-    @Request() { user }: { user: { userId: string; email: string } },) {
-    return this.warehouseReceiptsService.createWarehouseReceipt({ body, employee: user  });
+    @Request() { user }: { user: { userId: string; email: string } },
+  ) {
+    return this.warehouseReceiptsService.createWarehouseReceipt({
+      body,
+      employee: user,
+    });
   }
 
   @Patch('/:id')
@@ -41,28 +47,53 @@ export class WarehouseReceiptsController {
     @Body() body: UpdateWarehouseReceiptBodyDto,
     @Request() { user }: { user: { userId: string; email: string } },
   ) {
-    return this.warehouseReceiptsService.updateWarehouseReceipt({ id, body, employee: user  });
+    return this.warehouseReceiptsService.updateWarehouseReceipt({
+      id,
+      body,
+      employee: user,
+    });
   }
 
   @Delete('/:id')
   @UseGuards(JwtAuthGuard)
   async deleteWarehouseReceipt(
     @Param('id') id: string,
-    @Request() { user }: { user: { userId: string; email: string } },) {
-    return this.warehouseReceiptsService.deleteWarehouseReceipt({ id, employee: user  });
+    @Request() { user }: { user: { userId: string; email: string } },
+  ) {
+    return this.warehouseReceiptsService.deleteWarehouseReceipt({
+      id,
+      employee: user,
+    });
   }
 
   @Get('/')
   @UseGuards(JwtAuthGuard)
   async findWarehouseReceipts(
     @Query() query: FindWarehousesReceiptsQueryDto,
-    @Request() { user }: { user: { userId: string; email: string } },) {
-    return this.warehouseReceiptsService.findWarehouseReceipts({ query, employee: user  });
+    @Request() { user }: { user: { userId: string; email: string } },
+  ) {
+    return this.warehouseReceiptsService.findWarehouseReceipts({
+      query,
+      employee: user,
+    });
   }
 
   @Get('/:id')
   @UseGuards(JwtAuthGuard)
   async findWarehouseReceiptById(@Param('id') id: string) {
     return this.warehouseReceiptsService.findOne({ filter: { _id: id } });
+  }
+
+  @Get('/download/pdf')
+  async getPDF(@Res() res: Response): Promise<void> {
+    const buffer = await this.warehouseReceiptsService.generatePDF();
+
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': 'attachment; filename=example.pdf',
+      'Content-Length': buffer.length,
+    });
+
+    res.end(buffer);
   }
 }

@@ -11,7 +11,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { DeliveryNoteDetailsService } from './delivery-note-details.service';
 import { CreateDeliveryNoteDetailDto } from './dto/create-deliverynotedetail.dto';
@@ -23,7 +22,9 @@ import { FindDeliveryNoteDetailsQueryDto } from './dto/find-deliverynotedetails.
   version: '1',
 })
 export class DeliveryNoteDetailsController {
-  constructor(private readonly deliveryNoteDetailsService: DeliveryNoteDetailsService) {}
+  constructor(
+    private readonly deliveryNoteDetailsService: DeliveryNoteDetailsService,
+  ) {}
 
   @Post('/')
   @UseGuards(JwtAuthGuard)
@@ -31,7 +32,10 @@ export class DeliveryNoteDetailsController {
     @Body() body: CreateDeliveryNoteDetailDto,
     @Request() { user }: { user: { userId: string; email: string } },
   ) {
-    return this.deliveryNoteDetailsService.createDeliveryNoteDetail({ body, employee: user });
+    return this.deliveryNoteDetailsService.createDeliveryNoteDetail({
+      body,
+      employee: user,
+    });
   }
 
   @Patch('/:id')
@@ -41,7 +45,11 @@ export class DeliveryNoteDetailsController {
     @Body() body: UpdateDeliveryNoteDetailDto,
     @Request() { user }: { user: { userId: string; email: string } },
   ) {
-    return this.deliveryNoteDetailsService.updateDeliveryNoteDetail({ id, body, employee: user });
+    return this.deliveryNoteDetailsService.updateDeliveryNoteDetail({
+      id,
+      body,
+      employee: user,
+    });
   }
 
   @Delete('/:id')
@@ -50,7 +58,10 @@ export class DeliveryNoteDetailsController {
     @Param('id') id: string,
     @Request() { user }: { user: { userId: string; email: string } },
   ) {
-    return this.deliveryNoteDetailsService.deleteDeliveryNoteDetail({ id, employee: user });
+    return this.deliveryNoteDetailsService.deleteDeliveryNoteDetail({
+      id,
+      employee: user,
+    });
   }
 
   @Get('/')
@@ -59,7 +70,10 @@ export class DeliveryNoteDetailsController {
     @Query() query: FindDeliveryNoteDetailsQueryDto,
     @Request() { user }: { user: { userId: string; email: string } },
   ) {
-    return this.deliveryNoteDetailsService.findDeliveryNoteDetails({ query, employee: user });
+    return this.deliveryNoteDetailsService.findDeliveryNoteDetails({
+      query,
+      employee: user,
+    });
   }
 
   @Get('/:id')

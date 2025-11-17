@@ -28,8 +28,12 @@ export class ProductTypesController {
   @UseGuards(JwtAuthGuard)
   async createProductType(
     @Body() body: CreateProductTypeBodyDto,
-    @Request() { user }: { user: { userId: string; email: string } },) {
-    return await this.productTypesService.createProductType({ body, employee: user  });
+    @Request() { user }: { user: { userId: string; email: string } },
+  ) {
+    return await this.productTypesService.createProductType({
+      body,
+      employee: user,
+    });
   }
 
   @Patch('/:id')
@@ -39,23 +43,29 @@ export class ProductTypesController {
     @Body() body: UpdateProductTypesBodyDto,
     @Request() { user }: { user: { userId: string; email: string } },
   ) {
-    return this.productTypesService.updateProductTypes({ id, body, employee: user  });
+    return this.productTypesService.updateProductTypes({
+      id,
+      body,
+      employee: user,
+    });
   }
 
   @Delete('/:id')
   @UseGuards(JwtAuthGuard)
   async deleteProductTypes(
     @Param('id') id: string,
-    @Request() { user }: { user: { userId: string; email: string } },) {
-    return this.productTypesService.deleteProductType({ id, employee: user  });
+    @Request() { user }: { user: { userId: string; email: string } },
+  ) {
+    return this.productTypesService.deleteProductType({ id, employee: user });
   }
 
   @Get('/')
   @UseGuards(JwtAuthGuard)
   async findProductType(
     @Query() query: FindProDuctTypeQueryDto,
-    @Request() { user }: { user: { userId: string; email: string } },) {
-    return this.productTypesService.findProductType({ query, employee: user  });
+    @Request() { user }: { user: { userId: string; email: string } },
+  ) {
+    return this.productTypesService.findProductType({ query, employee: user });
   }
 
   @Get('/:id')

@@ -1,19 +1,23 @@
+import * as PDFDocument from 'pdfkit';
+import { Model, RootFilterQuery } from 'mongoose';
+
 import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { BaseCrudService } from 'src/cores/base-crud.core';
-import { WarehouseReceipt } from './schema/warehousereceipts.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, RootFilterQuery } from 'mongoose';
-import { CreateWarehouseReceiptBodyDto } from './dto/create-warehousereceipts.dto';
-import { UpdateWarehouseReceiptBodyDto } from './dto/update-warehousereceipts.dto';
-import { FindWarehousesReceiptsQueryDto } from './dto/find-warehousereceipts.dto';
+
 import sortHelper from 'src/helpers/sort.helper';
+import { RolesService } from 'src/roles/roles.service';
+import { BaseCrudService } from 'src/cores/base-crud.core';
 import paginationHelper from 'src/helpers/pagination.helper';
 import { EmployeesService } from 'src/employees/employees.service';
-import { RolesService } from 'src/roles/roles.service';
+
+import { WarehouseReceipt } from './schema/warehousereceipts.schema';
+import { FindWarehousesReceiptsQueryDto } from './dto/find-warehousereceipts.dto';
+import { CreateWarehouseReceiptBodyDto } from './dto/create-warehousereceipts.dto';
+import { UpdateWarehouseReceiptBodyDto } from './dto/update-warehousereceipts.dto';
 
 @Injectable()
 export class WarehouseReceiptsService extends BaseCrudService<WarehouseReceipt> {
@@ -37,14 +41,20 @@ export class WarehouseReceiptsService extends BaseCrudService<WarehouseReceipt> 
     const { userId } = employee;
     const { date, receiptNo, supplierId, warehouseId, employeeId } = body;
 
-    const actor = await this.employeesService.findOne({ filter: { _id: userId } });
+    const actor = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
     if (!actor) throw new UnauthorizedException('Employee id not found');
 
-    const role = await this.roleService.findOne({ filter: { _id: actor.roleId } });
+    const role = await this.roleService.findOne({
+      filter: { _id: actor.roleId },
+    });
     if (!role) throw new UnauthorizedException('Role id not found');
 
     if (!role.permisstion?.includes('create-warehouse-receipt')) {
-      throw new UnauthorizedException('You don’t have permission to create warehouse receipts');
+      throw new UnauthorizedException(
+        'You don’t have permission to create warehouse receipts',
+      );
     }
 
     return this.create({
@@ -65,14 +75,20 @@ export class WarehouseReceiptsService extends BaseCrudService<WarehouseReceipt> 
     const { userId } = employee;
     const { date, receiptNo, supplierId, warehouseId, employeeId } = body;
 
-    const actor = await this.employeesService.findOne({ filter: { _id: userId } });
+    const actor = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
     if (!actor) throw new UnauthorizedException('Employee id not found');
 
-    const role = await this.roleService.findOne({ filter: { _id: actor.roleId } });
+    const role = await this.roleService.findOne({
+      filter: { _id: actor.roleId },
+    });
     if (!role) throw new UnauthorizedException('Role id not found');
 
     if (!role.permisstion?.includes('update-warehouse-receipt')) {
-      throw new UnauthorizedException('You don’t have permission to update warehouse receipts');
+      throw new UnauthorizedException(
+        'You don’t have permission to update warehouse receipts',
+      );
     }
 
     const newWarehouseReceipt = await this.findOneAndUpdate({
@@ -97,14 +113,20 @@ export class WarehouseReceiptsService extends BaseCrudService<WarehouseReceipt> 
   }) {
     const { userId } = employee;
 
-    const actor = await this.employeesService.findOne({ filter: { _id: userId } });
+    const actor = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
     if (!actor) throw new UnauthorizedException('Employee id not found');
 
-    const role = await this.roleService.findOne({ filter: { _id: actor.roleId } });
+    const role = await this.roleService.findOne({
+      filter: { _id: actor.roleId },
+    });
     if (!role) throw new UnauthorizedException('Role id not found');
 
     if (!role.permisstion?.includes('delete-warehouse-receipt')) {
-      throw new UnauthorizedException('You don’t have permission to delete warehouse receipts');
+      throw new UnauthorizedException(
+        'You don’t have permission to delete warehouse receipts',
+      );
     }
 
     const deletedWarehouseReceipt = await this.findOneAndDelete({
@@ -128,14 +150,20 @@ export class WarehouseReceiptsService extends BaseCrudService<WarehouseReceipt> 
   }) {
     const { userId } = employee;
 
-    const actor = await this.employeesService.findOne({ filter: { _id: userId } });
+    const actor = await this.employeesService.findOne({
+      filter: { _id: userId },
+    });
     if (!actor) throw new UnauthorizedException('Employee id not found');
 
-    const role = await this.roleService.findOne({ filter: { _id: actor.roleId } });
+    const role = await this.roleService.findOne({
+      filter: { _id: actor.roleId },
+    });
     if (!role) throw new UnauthorizedException('Role id not found');
 
     if (!role.permisstion?.includes('read-warehouse-receipt')) {
-      throw new UnauthorizedException('You don’t have permission to view warehouse receipts');
+      throw new UnauthorizedException(
+        'You don’t have permission to view warehouse receipts',
+      );
     }
 
     const { filter, page, limit } = query;
@@ -209,5 +237,27 @@ export class WarehouseReceiptsService extends BaseCrudService<WarehouseReceipt> 
     }
 
     return warehouseReceiptExists;
+  }
+
+  async generatePDF(): Promise<Buffer> {
+    const pdfBuffer: Buffer = await new Promise((resolve) => {
+      const doc = new PDFDocument({
+        size: 'LETTER',
+        bufferPages: true,
+      });
+
+      // customize your PDF document
+      doc.text('hello world', 100, 50);
+      doc.end();
+
+      const buffer = [];
+      doc.on('data', buffer.push.bind(buffer));
+      doc.on('end', () => {
+        const data = Buffer.concat(buffer);
+        resolve(data);
+      });
+    });
+
+    return pdfBuffer;
   }
 }

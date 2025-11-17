@@ -28,7 +28,8 @@ export class CustomersController {
   @UseGuards(JwtAuthGuard)
   async createCustomer(
     @Body() body: CreateCustomerBodyDto,
-    @Request() { user }: { user: { userId: string; email: string } },) {
+    @Request() { user }: { user: { userId: string; email: string } },
+  ) {
     return this.customersService.createCustomer({ body, employee: user });
   }
 
@@ -46,7 +47,8 @@ export class CustomersController {
   @UseGuards(JwtAuthGuard)
   async deleteCustomer(
     @Param('id') id: string,
-    @Request() { user }: { user: { userId: string; email: string } },) {
+    @Request() { user }: { user: { userId: string; email: string } },
+  ) {
     return this.customersService.deleteCustomer({ id, employee: user });
   }
 
@@ -54,7 +56,8 @@ export class CustomersController {
   @UseGuards(JwtAuthGuard)
   async findCustomers(
     @Query() query: FindCustomersQueryDto,
-    @Request() { user }: { user: { userId: string; email: string } },) {
+    @Request() { user }: { user: { userId: string; email: string } },
+  ) {
     return this.customersService.findCustomers({ query, employee: user });
   }
 

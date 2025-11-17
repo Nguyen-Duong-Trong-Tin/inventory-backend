@@ -1,4 +1,10 @@
-import { forwardRef, Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, RootFilterQuery } from 'mongoose';
 import { BaseCrudService } from 'src/cores/base-crud.core';
@@ -11,7 +17,7 @@ import paginationHelper from 'src/helpers/pagination.helper';
 import { EmployeesService } from 'src/employees/employees.service';
 
 @Injectable()
-export class RolesService extends BaseCrudService<Role>  {
+export class RolesService extends BaseCrudService<Role> {
   constructor(
     @InjectModel(Role.name) private roleModel: Model<Role>,
     @Inject(forwardRef(() => EmployeesService))
@@ -49,7 +55,9 @@ export class RolesService extends BaseCrudService<Role>  {
     // "create-role"
     const { permisstion } = roleExists;
     if (!permisstion?.includes('create-role')) {
-      throw new UnauthorizedException('You don’t have permission to create roles');
+      throw new UnauthorizedException(
+        'You don’t have permission to create roles',
+      );
     }
 
     // New role
@@ -87,7 +95,9 @@ export class RolesService extends BaseCrudService<Role>  {
 
     const { permisstion } = roleExists;
     if (!permisstion?.includes('update-role')) {
-      throw new UnauthorizedException('You don’t have permission to update roles');
+      throw new UnauthorizedException(
+        'You don’t have permission to update roles',
+      );
     }
 
     const { name, description, permisstion: newPermissions } = body;
@@ -130,7 +140,9 @@ export class RolesService extends BaseCrudService<Role>  {
 
     const { permisstion } = roleExists;
     if (!permisstion?.includes('delete-role')) {
-      throw new UnauthorizedException('You don’t have permission to delete roles');
+      throw new UnauthorizedException(
+        'You don’t have permission to delete roles',
+      );
     }
 
     const deletedRole = await this.findOneAndDelete({
@@ -144,7 +156,7 @@ export class RolesService extends BaseCrudService<Role>  {
     return deletedRole;
   }
 
- // GET /roles
+  // GET /roles
   async findRoles({
     query,
     employee,
@@ -170,7 +182,9 @@ export class RolesService extends BaseCrudService<Role>  {
 
     const { permisstion } = roleExists;
     if (!permisstion?.includes('read-role')) {
-      throw new UnauthorizedException('You don’t have permission to view roles');
+      throw new UnauthorizedException(
+        'You don’t have permission to view roles',
+      );
     }
 
     const { filter, page, limit } = query;

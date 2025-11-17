@@ -29,7 +29,8 @@ export class EmployeesController {
   @UseGuards(JwtAuthGuard)
   async createEmployee(
     @Body() body: CreateEmployeeBodyDto,
-    @Request() { user }: { user: { userId: string; email: string } },) {
+    @Request() { user }: { user: { userId: string; email: string } },
+  ) {
     return this.employeesService.createEmployee({ body, employee: user });
   }
 
@@ -40,13 +41,15 @@ export class EmployeesController {
     @Body() body: UpdateEmployeeBodyDto,
     @Request() { user }: { user: { userId: string; email: string } },
   ) {
-    return this.employeesService.updateEmployee({ id, body, employee: user  });
+    return this.employeesService.updateEmployee({ id, body, employee: user });
   }
 
   @Delete('/:id')
   @UseGuards(JwtAuthGuard)
-  async deleteEmployee(@Param('id') id: string,
-  @Request() { user }: { user: { userId: string; email: string } },) {
+  async deleteEmployee(
+    @Param('id') id: string,
+    @Request() { user }: { user: { userId: string; email: string } },
+  ) {
     return this.employeesService.deleteEmployee({ id, employee: user });
   }
 
@@ -54,7 +57,7 @@ export class EmployeesController {
   @UseGuards(JwtAuthGuard)
   async findEmployees(
     @Query() query: FindEmployeesQueryDto,
-     @Request() { user }: { user: { userId: string; email: string } },
+    @Request() { user }: { user: { userId: string; email: string } },
   ) {
     return this.employeesService.findEmployees({ query, employee: user });
   }
