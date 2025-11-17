@@ -46,6 +46,8 @@ export class LotsService extends BaseCrudService<Lot> {
       expiryDate,
       productId,
       warehouseReceiptId,
+      quantity,
+      importPrice,
     } = body;
 
     const actor = await this.employeesService.findOne({ filter: { _id: userId } });
@@ -79,6 +81,8 @@ export class LotsService extends BaseCrudService<Lot> {
         expiryDate: new Date(expiryDate),
         productId,
         warehouseReceiptId,
+        quantity,
+        importPrice,
       },
     });
   }
@@ -100,6 +104,8 @@ export class LotsService extends BaseCrudService<Lot> {
       expiryDate,
       productId,
       warehouseReceiptId,
+      quantity,
+      importPrice,
     } = body;
 
     const actor = await this.employeesService.findOne({ filter: { _id: userId } });
@@ -136,6 +142,8 @@ export class LotsService extends BaseCrudService<Lot> {
         expiryDate,
         productId,
         warehouseReceiptId,
+        quantity,
+        importPrice,
       },
     });
 
@@ -208,6 +216,8 @@ export class LotsService extends BaseCrudService<Lot> {
         expiryDate,
         productId,
         warehouseReceiptId,
+        quantity,
+        importPrice,
         sortBy,
         sortOrder,
       } = filter;
@@ -230,6 +240,14 @@ export class LotsService extends BaseCrudService<Lot> {
 
       if (warehouseReceiptId) {
         filterOptions.warehouseReceiptId = { $regex: warehouseReceiptId, $options: 'i' };
+      }
+
+      if (quantity !== undefined) {
+        filterOptions.quantity = Number(quantity);
+      }
+
+      if (importPrice !== undefined) {
+        filterOptions.importPrice = Number(importPrice);
       }
 
       sort = sortHelper(sortBy, sortOrder);
