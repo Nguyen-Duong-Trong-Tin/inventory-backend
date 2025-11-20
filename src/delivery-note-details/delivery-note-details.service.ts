@@ -222,4 +222,8 @@ export class DeliveryNoteDetailsService extends BaseCrudService<DeliveryNoteDeta
     if (!detail) throw new NotFoundException('DeliveryNoteDetail not found');
     return detail;
   }
+
+  async findMany({ filter }: { filter: Partial<DeliveryNoteDetail> }) {
+    return this.deliveryNoteDetailModel.find(filter).exec();
+  }
 }

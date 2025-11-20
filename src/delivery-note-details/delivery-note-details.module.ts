@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import {
@@ -19,9 +19,9 @@ import { DeliveryNoteDetailsService } from './delivery-note-details.service';
       { name: DeliveryNoteDetail.name, schema: DeliveryNoteDetailSchema },
     ]),
     LotsModule,
-    DeliveryNotesModule,
     EmployeesModule,
     RolesModule,
+    forwardRef(() => DeliveryNotesModule),
   ],
   controllers: [DeliveryNoteDetailsController],
   providers: [DeliveryNoteDetailsService],

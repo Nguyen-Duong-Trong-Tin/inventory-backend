@@ -8,6 +8,7 @@ import {
   Post,
   Query,
   Request,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 
@@ -16,6 +17,7 @@ import { CreateDeliveryNoteBodyDto } from './dto/create-deliverynote.dto';
 import { UpdateDeliveryNoteBodyDto } from './dto/update-deliverynote.dto';
 import { FindDeliveryNotesQueryDto } from './dto/find-deliverynotes.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { Response } from 'express';
 
 @Controller({
   path: 'delivery-notes',
@@ -70,6 +72,23 @@ export class DeliveryNotesController {
       employee: user,
     });
   }
+
+   @Get('download/pdf/:id')
+    async downloadDeliveryNotePDF(
+      @Param('id') deliveryNoteId: string,
+      @Res() res: Response
+    ): Promise<void> {
+      const buffer = await this.deliveryNotesService.generateDeliveryNotePDF(deliveryNoteId);
+  
+      res.set({
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename=delivery_note_${deliveryNoteId}.pdf`,
+        'Content-Length': buffer.length,
+      });
+  
+      res.end(buffer);
+    }
+  
 
   @Get('/:id')
   @UseGuards(JwtAuthGuard)
