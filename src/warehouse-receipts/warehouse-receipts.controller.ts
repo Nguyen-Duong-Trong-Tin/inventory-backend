@@ -78,22 +78,24 @@ export class WarehouseReceiptsController {
     });
   }
 
+  // ✅ Đặt trước để tránh bị route động bắt nhầm
+  @Get('/download/pdf/:id')
+    async getPDF(@Param('id') receiptId: string, @Res() res: Response): Promise<void> {
+      const buffer = await this.warehouseReceiptsService.generateReceiptPDF(receiptId);
+
+      res.set({
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename=phieu_nhap_hang_${receiptId}.pdf`,
+        'Content-Length': buffer.length,
+      });
+
+      res.end(buffer);
+    }
+
   @Get('/:id')
   @UseGuards(JwtAuthGuard)
   async findWarehouseReceiptById(@Param('id') id: string) {
     return this.warehouseReceiptsService.findOne({ filter: { _id: id } });
   }
 
-  @Get('/download/pdf')
-  async getPDF(@Res() res: Response): Promise<void> {
-    const buffer = await this.warehouseReceiptsService.generatePDF();
-
-    res.set({
-      'Content-Type': 'application/pdf',
-      'Content-Disposition': 'attachment; filename=example.pdf',
-      'Content-Length': buffer.length,
-    });
-
-    res.end(buffer);
-  }
 }
