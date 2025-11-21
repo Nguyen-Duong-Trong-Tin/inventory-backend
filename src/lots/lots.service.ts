@@ -1,5 +1,7 @@
 import {
   BadRequestException,
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -22,7 +24,8 @@ import { RolesService } from 'src/roles/roles.service';
 export class LotsService extends BaseCrudService<Lot> {
   constructor(
     private readonly productsService: ProductsService,
-    private readonly warehouseReceiptsService: WarehouseReceiptsService,
+    @Inject(forwardRef(() => WarehouseReceiptsService))
+        private readonly warehouseReceiptsService: WarehouseReceiptsService,
     @InjectModel(Lot.name)
     private lotModel: Model<Lot>,
     private readonly employeesService: EmployeesService,
@@ -322,4 +325,9 @@ export class LotsService extends BaseCrudService<Lot> {
 
     return lotExists;
   }
+
+  async findLotsByReceiptId(receiptId: string) {
+    return this.lotModel.find({ warehouseReceiptId: receiptId }).exec();
+  }
+
 }
