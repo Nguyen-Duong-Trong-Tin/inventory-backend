@@ -73,22 +73,22 @@ export class DeliveryNotesController {
     });
   }
 
-   @Get('download/pdf/:id')
-    async downloadDeliveryNotePDF(
-      @Param('id') deliveryNoteId: string,
-      @Res() res: Response
-    ): Promise<void> {
-      const buffer = await this.deliveryNotesService.generateDeliveryNotePDF(deliveryNoteId);
-  
-      res.set({
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename=delivery_note_${deliveryNoteId}.pdf`,
-        'Content-Length': buffer.length,
-      });
-  
-      res.end(buffer);
-    }
-  
+  @Get('download/pdf/:id')
+  async downloadDeliveryNotePDF(
+    @Param('id') deliveryNoteId: string,
+    @Res() res: Response,
+  ): Promise<void> {
+    const buffer =
+      await this.deliveryNotesService.generateDeliveryNotePDF(deliveryNoteId);
+
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename=delivery_note_${deliveryNoteId}.pdf`,
+      'Content-Length': buffer.length,
+    });
+
+    res.end(buffer);
+  }
 
   @Get('/:id')
   @UseGuards(JwtAuthGuard)

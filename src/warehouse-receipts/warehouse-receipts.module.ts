@@ -14,7 +14,9 @@ import { ProductTypesModule } from 'src/product-types/product-types.module';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: 'WarehouseReceipt', schema: WarehouseReceiptSchema }]),
+    MongooseModule.forFeature([
+      { name: 'WarehouseReceipt', schema: WarehouseReceiptSchema },
+    ]),
     forwardRef(() => LotsModule), // nếu có vòng lặp
     SuppliersModule,
     EmployeesModule,
