@@ -26,7 +26,7 @@ import { DeliveryNoteDetailsModule } from 'src/delivery-note-details/delivery-no
     ProductsModule,
     ProductTypesModule,
     LotsModule,
-      forwardRef(() => DeliveryNoteDetailsModule),
+    forwardRef(() => DeliveryNoteDetailsModule),
   ],
   controllers: [DeliveryNotesController],
   providers: [DeliveryNotesService],

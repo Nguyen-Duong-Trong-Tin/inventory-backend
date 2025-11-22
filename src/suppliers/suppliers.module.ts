@@ -18,6 +18,6 @@ import { RolesModule } from 'src/roles/roles.module';
   ],
   controllers: [SuppliersController],
   providers: [SuppliersService],
-  exports: [SuppliersService], 
+  exports: [SuppliersService],
 })
 export class SuppliersModule {}

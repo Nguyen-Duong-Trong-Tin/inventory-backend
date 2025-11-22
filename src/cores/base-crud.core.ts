@@ -56,4 +56,14 @@ export abstract class BaseCrudService<T> {
   async findOneAndDelete({ filter }: { filter: FilterQuery<T> }) {
     return this.model.findOneAndDelete(filter);
   }
+
+  async updateMany({
+    filter,
+    update,
+  }: {
+    filter: FilterQuery<T>;
+    update: UpdateQuery<T>;
+  }) {
+    return this.model.updateMany(filter, update);
+  }
 }

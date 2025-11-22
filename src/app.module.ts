@@ -15,6 +15,8 @@ import { WarehouseReceiptsModule } from './warehouse-receipts/warehouse-receipts
 import { AuthModule } from './auth/auth.module';
 import { LotsModule } from './lots/lots.module';
 import { DeliveryNoteDetailsModule } from './delivery-note-details/delivery-note-details.module';
+import { SuggestionsModule } from './suggestions/suggestions.module';
+import { WeightsModule } from './weights/weights.module';
 
 @Module({
   imports: [
@@ -33,6 +35,8 @@ import { DeliveryNoteDetailsModule } from './delivery-note-details/delivery-note
     WarehouseReceiptsModule,
     LotsModule,
     AuthModule,
+    SuggestionsModule,
+    WeightsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

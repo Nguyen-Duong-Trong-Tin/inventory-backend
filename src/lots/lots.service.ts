@@ -25,7 +25,7 @@ export class LotsService extends BaseCrudService<Lot> {
   constructor(
     private readonly productsService: ProductsService,
     @Inject(forwardRef(() => WarehouseReceiptsService))
-        private readonly warehouseReceiptsService: WarehouseReceiptsService,
+    private readonly warehouseReceiptsService: WarehouseReceiptsService,
     @InjectModel(Lot.name)
     private lotModel: Model<Lot>,
     private readonly employeesService: EmployeesService,
@@ -329,5 +329,4 @@ export class LotsService extends BaseCrudService<Lot> {
   async findLotsByReceiptId(receiptId: string) {
     return this.lotModel.find({ warehouseReceiptId: receiptId }).exec();
   }
-
 }
