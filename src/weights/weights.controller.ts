@@ -1,4 +1,5 @@
-import { Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Patch, UseGuards, Req } from '@nestjs/common';
+import { Request } from 'express';
 
 import { WeightsService } from './weights.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
@@ -20,7 +21,13 @@ export class WeightsController {
 
   @Patch('/:id')
   @UseGuards(JwtAuthGuard)
-  async activeWeight(@Param('id') id: string) {
-    return this.weightsService.activeWeight({ id });
+  async activeWeight(@Param('id') id: string, @Req() req: Request) {
+    // req.user được gắn bởi JwtAuthGuard sau khi verify token
+    const employee = req.user as { userId: string; email: string };
+
+    return this.weightsService.activeWeight({
+      id,
+      employee,
+    });
   }
 }
